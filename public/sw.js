@@ -1,11 +1,14 @@
 // Offline support: precache every static file, then serve network first with the cache as fallback.
 // Bump CACHE when this list changes. test/static.test.mjs checks the list matches public/.
-const CACHE = 'overlap-v5';
+const CACHE = 'overlap-v6';
 const FILES = [
   "./",
   "styles.css",
   "showcase.css",
   "favicon.svg",
+  "favicon.ico",
+  "favicon-96.png",
+  "apple-touch-icon.png",
   "og.png",
   "robots.txt",
   "sitemap.xml",
