@@ -42,7 +42,8 @@ const MOTIFS = {
   // Censory: a scanned document with made-up personal data. Each value is detected, then blacked out.
   redact: () => h('div', 'sc-motif sc-motif-redact',
     h('div', 'sc-doc-title', 'Employment contract', h('span', null, 'Page 1')),
-    ...[['Name', 'Maria Ionescu'], ['CNP', '2850712123456'], ['Address', 'Str. Florilor 12, Cluj'], ['IBAN', 'RO49 AAAA 1B31 0075 9384'], ['Phone', '+40 712 345 678']]
+    // Made up on purpose: 123-45-6789 is not a valid SSN, 555-01xx numbers are reserved for fiction, example.com for examples.
+    ...[['Name', 'Emily Johnson'], ['SSN', '123-45-6789'], ['Address', '1200 Oak St, Austin, TX'], ['Phone', '+1 (212) 555-0142'], ['Email', 'emily.j@example.com']]
       .map(([label, value], i) => h('div', 'sc-doc-row', h('span', 'sc-doc-label', label), setVars(h('span', 'sc-pii', value), { i })))),
 };
 
