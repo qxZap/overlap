@@ -4,7 +4,7 @@ import { analyze, dayRange, dateIn, hhmm, offsetAt, formatOffset, rate, statusAt
 import { encode, decode, MAX_PEOPLE, MAX_SLOTS } from './state.js';
 import { ics } from './ics.js';
 import { PRESETS, clamp, cityOf, groupKey, groupPeople, moveGroup, initials, runs, windowStart, stepKey, typeahead, shiftDate, highlight } from './ui.js';
-import { mountAds } from './adunit.js';
+import { mountAds } from './showcase.js';
 import makers from './makers.js';
 
 const $ = id => document.getElementById(id);
@@ -331,7 +331,8 @@ function renderAnswer() {
   $('ans-note').textContent = note;
   const bestTotal = atBest ? total : state.people.reduce((sum, p) => sum + PAIN[rate(p, best.start, m)], 0);
   $('ans-score').textContent = `Pain score ${total}${atBest ? '' : ` (best time: ${bestTotal})`}`;
-  $('back-best').hidden = atBest;
+  // Hidden with visibility, not removed, so the card keeps its height while the window is dragged.
+  $('back-best').classList.toggle('is-off', atBest);
 
   $('ans-people').replaceChildren(...state.people.map((p, i) => {
     const city = cityOf(p), r = ratings[i];
@@ -490,13 +491,16 @@ function addPerson(r) {
     toast(`A team can have up to ${MAX_PEOPLE} people.`);
     return;
   }
-  const p = { name: '', city: r.raw ? '' : r.name, tz: r.tz, start: DEFAULT_START, end: DEFAULT_END };
+  const name = $('add-name').value.trim().slice(0, 40);
+  const p = { name, city: r.raw ? '' : r.name, tz: r.tz, start: DEFAULT_START, end: DEFAULT_END };
   state.people.push(p);
+  $('add-name').value = '';
   $('add-city').value = '';
   closeResults();
   update({ scroll: true });
-  toast(`Added ${nameOf(p)}. Select the person to add a name or change hours.`);
-  $('add-city').focus();
+  toast(`Added ${nameOf(p)}. ${name ? 'Select them to change hours.' : 'Select the person to add a name or change hours.'}`);
+  // Next teammate starts at the name, so adding a whole team is: name, city, Enter, repeat.
+  $('add-name').focus();
 }
 
 /* ---------- person dialog ---------- */
@@ -670,6 +674,12 @@ tpList.addEventListener('pointermove', e => {
 
 /* ---------- events: team ---------- */
 
+$('add-name').addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  e.preventDefault();
+  $('add-city').focus();
+});
+$('add-name').addEventListener('focus', () => loadCities(), { once: true });
 $('add-city').addEventListener('pointerdown', () => loadCities());
 $('add-city').addEventListener('input', async e => {
   const q = e.target.value;
@@ -931,7 +941,7 @@ setInterval(() => {
   renderNow();
 }, 30000);
 
-mountAds($('ad-slot'), makers);
+mountAds($('showcase'), makers);
 window.addEventListener('hashchange', load);
 load();
 document.body.classList.remove('is-booting');

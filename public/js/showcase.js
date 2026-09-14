@@ -1,4 +1,4 @@
-// Rotating ad unit for our own apps (data in makers.js). adunit.css switches the layout:
+// Rotating ad unit for our own apps (data in makers.js). showcase.css switches the layout:
 // an anchor bar fixed to the bottom of small screens (dismissible), a half-page unit in the right rail of wide ones.
 // Plain links, no tracking, no network: logos are local files and every animation is CSS.
 const INTERVAL = 7000; // ms each ad stays up; the progress segment's CSS animation runs for this long, then the next ad shows
@@ -14,25 +14,25 @@ const setVars = (e, vars, prefix = '') => {
   return e;
 };
 
-// One small animated scene per product, made of plain elements and animated by adunit.css while the ad is showing.
+// One small animated scene per product, made of plain elements and animated by showcase.css while the ad is showing.
 const MOTIFS = {
   // scrape.land: fields of a page resolve into structured values while a scan beam passes
-  data: () => h('div', 'ad-motif ad-motif-data',
+  data: () => h('div', 'sc-motif sc-motif-data',
     ...[['"title"', 0.9], ['"price"', 0.5], ['"in_stock"', 0.7], ['"rating"', 0.4]].map(([key, w], i) =>
-      setVars(h('div', 'ad-row', h('span', 'ad-key', key), setVars(h('span', 'ad-val'), { w })), { i })),
-    h('div', 'ad-beam')),
+      setVars(h('div', 'sc-row', h('span', 'sc-key', key), setVars(h('span', 'sc-val'), { w })), { i })),
+    h('div', 'sc-beam')),
   // Penholder: the item that matters most rises above the line
-  order: () => h('div', 'ad-motif ad-motif-order',
+  order: () => h('div', 'sc-motif sc-motif-order',
     ...['Onboarding emails', 'Pricing page', 'Quarterly report', 'Fix checkout bug'].map((t, i, all) =>
-      h('div', i === all.length - 1 ? 'ad-item is-rising' : 'ad-item', t)),
-    h('div', 'ad-pen-line')),
+      h('div', i === all.length - 1 ? 'sc-item is-rising' : 'sc-item', t)),
+    h('div', 'sc-pen-line')),
   // Censory: redaction bars close over the personal data in a document
   redact: () => {
     let n = 0;
-    return h('div', 'ad-motif ad-motif-redact',
+    return h('div', 'sc-motif sc-motif-redact',
       ...[[92, 34, 40], [78, 8, 30], [96, 52, 30], [64, 0, 0], [84, 20, 46]].map(([len, l, w]) => {
-        const line = setVars(h('div', 'ad-text'), { len: `${len}%` });
-        if (w) line.append(setVars(h('span', 'ad-mark'), { l: `${l}%`, w: `${w}%`, i: n++ }));
+        const line = setVars(h('div', 'sc-text'), { len: `${len}%` });
+        if (w) line.append(setVars(h('span', 'sc-mark'), { l: `${l}%`, w: `${w}%`, i: n++ }));
         return line;
       }));
   },
@@ -40,9 +40,9 @@ const MOTIFS = {
 
 export function mountAds(slot, ads) {
   const slides = [], segs = [];
-  const stage = h('div', 'adunit-stage');
-  const progress = h('div', 'adunit-progress'); // clickable segments, half-page unit
-  const timer = h('div', 'adunit-timer', h('i')); // plain timer line, anchor bar
+  const stage = h('div', 'showcase-stage');
+  const progress = h('div', 'showcase-progress'); // logo tabs, half-page unit
+  const timer = h('div', 'showcase-timer', h('i')); // plain timer line, anchor bar
   let index = 0;
 
   const show = i => {
@@ -62,21 +62,23 @@ export function mountAds(slot, ads) {
   ads.forEach((ad, i) => {
     const motif = MOTIFS[ad.motif]();
     motif.setAttribute('aria-hidden', 'true');
-    const arrow = h('span', 'ad-arrow', '→');
+    const arrow = h('span', 'sc-arrow', '→');
     arrow.setAttribute('aria-hidden', 'true');
-    const logo = Object.assign(document.createElement('img'), { src: ad.logo, alt: '', width: 40, height: 40, className: 'ad-logo' });
-    const slide = setVars(h('a', 'ad-slide',
+    const logo = Object.assign(document.createElement('img'), { src: ad.logo, alt: '', width: 40, height: 40, className: 'sc-logo' });
+    const slide = setVars(h('a', 'sc-slide',
       motif,
-      h('span', 'ad-brand', logo, h('span', 'ad-name', ad.title)),
-      h('span', 'ad-headline', ad.headline),
-      h('span', 'ad-line', ad.line),
-      h('span', 'ad-cta', h('span', 'ad-cta-text', ad.cta), arrow)), ad.theme, 'ad-');
+      h('span', 'sc-brand', logo, h('span', 'sc-name', ad.title)),
+      h('span', 'sc-headline', ad.headline),
+      h('span', 'sc-line', ad.line),
+      h('span', 'sc-cta', h('span', 'sc-cta-text', ad.cta), arrow)), ad.theme, 'sc-');
     // A new tab, so following an ad never throws away what someone was doing on this page.
     Object.assign(slide, { href: ad.url, target: '_blank', rel: 'noopener' });
     slides.push(slide);
     stage.append(slide);
 
-    const seg = h('button', 'adunit-seg', h('i'));
+    // A tab per product with its logo and name, so all three stay visible while one plays.
+    const tabLogo = Object.assign(document.createElement('img'), { src: ad.logo, alt: '', width: 28, height: 28 });
+    const seg = h('button', 'showcase-seg', tabLogo, h('span', 'showcase-seg-name', ad.title), h('i'));
     seg.type = 'button';
     seg.setAttribute('aria-label', `Show ad ${i + 1} of ${ads.length}: ${ad.title}`);
     seg.addEventListener('click', () => show(i));
@@ -84,12 +86,12 @@ export function mountAds(slot, ads) {
     progress.append(seg);
   });
 
-  const close = h('button', 'adunit-close', '×');
+  const close = h('button', 'showcase-close', '×');
   close.type = 'button';
   close.setAttribute('aria-label', 'Close ad');
-  const unit = setVars(h('div', 'adunit', h('span', 'adunit-badge', 'Ad'), close, stage, progress, timer), { 'ad-interval': `${INTERVAL}ms` });
+  const unit = setVars(h('div', 'showcase', h('span', 'showcase-badge', 'Ad'), close, stage, progress, timer), { 'sc-interval': `${INTERVAL}ms` });
 
-  unit.addEventListener('animationend', e => { if (e.animationName === 'ad-progress') show((index + 1) % slides.length); });
+  unit.addEventListener('animationend', e => { if (e.animationName === 'sc-progress') show((index + 1) % slides.length); });
   // Pause while someone points at or tabs into the ad, and while the tab is hidden.
   const pause = on => unit.classList.toggle('is-paused', on);
   unit.addEventListener('pointerenter', () => pause(true));
@@ -99,10 +101,10 @@ export function mountAds(slot, ads) {
   document.addEventListener('visibilitychange', () => unit.classList.toggle('is-hidden-tab', document.hidden));
   close.addEventListener('click', () => {
     unit.classList.add('is-dismissed');
-    document.body.classList.remove('has-ad-anchor');
+    document.body.classList.remove('has-showcase-bar');
   });
 
   slot.replaceChildren(unit);
-  document.body.classList.add('has-ad-anchor');
+  document.body.classList.add('has-showcase-bar');
   show(0);
 }

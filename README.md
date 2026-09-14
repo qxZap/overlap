@@ -66,7 +66,7 @@ The script keeps name, ASCII name, country code, region and time zone, sorts by 
 
 City data is JS rather than JSON, and the house ads (scrape.land, Penholder, Censory) live in `public/js/makers.js` with logos in `public/makers/`, instead of `ads.json`, because the CSP sets `connect-src 'none'`, which blocks `fetch` and JSON module imports alike. (Nothing is named `ads`: ad blockers block such files, and a blocked import would break the page.) The city file is loaded with a dynamic `import()` the first time someone types in or taps the search box, never on page load.
 
-The ads render through `public/js/adunit.js` and `public/adunit.css`: a dismissible bar fixed to the bottom of screens narrower than 75rem, and a rotating half page unit in a sticky right column from 75rem. Plain links, no tracking, every animation is CSS and stops under reduced motion.
+The ads render through `public/js/showcase.js` and `public/showcase.css`: a dismissible bar fixed to the bottom of screens narrower than 75rem, and a rotating half page unit in a sticky right column from 75rem. Plain links, no tracking, every animation is CSS and stops under reduced motion.
 
 The Open Graph image `public/og.png` is rendered from `tools/og.html`:
 
@@ -105,7 +105,7 @@ Traffic numbers come from the Cloudflare dashboard. There is no analytics script
 ```
 public/index.html      page, including the inline SVG icon sprite
 public/styles.css      design tokens (light and dark) and all page styles
-public/adunit.css      house ad unit styles
+public/showcase.css      house ad unit styles
 public/fonts/          Plus Jakarta Sans, latin subset, variable weight
 public/js/app.js       UI
 public/js/ui.js        UI helpers: presets, grouping, timeline pointer and keyboard maths (pure, tested)
@@ -113,7 +113,7 @@ public/js/tz.js        time zone engine (pure, tested)
 public/js/state.js     URL hash encode and decode (pure, tested)
 public/js/ics.js       calendar file (pure, tested)
 public/js/card.js      share card canvas, loaded on demand
-public/js/adunit.js    house ad unit
+public/js/showcase.js    house ad unit
 public/js/makers.js    house ad copy, logos in public/makers/
 public/js/cities.js    generated GeoNames data, loaded on demand
 public/sw.js           offline cache

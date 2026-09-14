@@ -11,7 +11,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="adunit.css">
+<link rel="stylesheet" href="showcase.css">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Overlap">
 <meta property="og:title" content="When is everyone on your team actually awake?">
@@ -58,10 +58,10 @@
 
 <div class="page">
   <header class="top">
-    <p class="brand">
+    <a class="brand" href="./" aria-label="Overlap home">
       <svg class="mark" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2563EB"/><circle cx="12.5" cy="16" r="6.5" fill="none" stroke="#fff" stroke-width="2.4"/><circle cx="19.5" cy="16" r="6.5" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M16 10.6a6.5 6.5 0 0 1 0 10.8 6.5 6.5 0 0 1 0-10.8Z" fill="#34D399"/></svg>
       Overlap
-    </p>
+    </a>
     <p class="top-note">No signup. Your team lives in the link.</p>
   </header>
 
@@ -73,11 +73,18 @@
 
     <section class="card team" aria-label="Your team">
       <div class="combo">
-        <label for="add-city" class="combo-label">Add a city or time zone</label>
-        <div class="combo-field">
-          <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
-          <input id="add-city" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="city-list" aria-describedby="add-help" placeholder="Bucharest, Pune or Asia/Kolkata" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">
-          <ul id="city-list" class="options" role="listbox" aria-label="Matching places" hidden></ul>
+        <p class="combo-label" id="add-h">Add a teammate</p>
+        <div class="add-fields" role="group" aria-labelledby="add-h">
+          <div class="add-name">
+            <label for="add-name" class="vh">Name, optional</label>
+            <input id="add-name" type="text" maxlength="40" placeholder="Name (optional)" autocomplete="off" autocapitalize="words" spellcheck="false" enterkeyhint="next">
+          </div>
+          <div class="combo-field">
+            <label for="add-city" class="vh">City or time zone</label>
+            <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+            <input id="add-city" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="city-list" aria-describedby="add-help" placeholder="City, like Bucharest or Asia/Kolkata" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">
+            <ul id="city-list" class="options" role="listbox" aria-label="Matching places" hidden></ul>
+          </div>
         </div>
         <p id="add-help" class="combo-help">34,000 cities, down to small towns, or any IANA time zone.</p>
       </div>
@@ -117,16 +124,17 @@
     <div id="result" class="result" hidden>
       <section class="card answer" aria-labelledby="ans-kicker">
         <div class="ans-main">
-          <p class="kicker" id="ans-kicker">Best time to meet</p>
+          <div class="ans-top">
+            <p class="kicker" id="ans-kicker">Best time to meet</p>
+            <button id="back-best" class="btn btn-ghost btn-sm is-off" type="button" aria-label="Back to best time"><svg class="i" aria-hidden="true"><use href="#i-reset"/></svg>Best time</button>
+          </div>
           <h2 class="ans-time" id="ans-time" tabindex="-1"></h2>
           <p class="ans-date"><span id="ans-date"></span><span id="ans-utc" class="ans-utc"></span></p>
           <p class="ans-note" id="ans-note"></p>
           <p class="ans-score"><span class="score" id="ans-score"></span><span class="score-help">Lower is fairer: great 0, fine 1, early or late 3, asleep 8 per person.</span></p>
           <div class="ans-actions">
             <button id="copy-link" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-link"/></svg>Copy team link</button>
-            <button id="ics" class="btn btn-secondary" type="button"><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg>Add to calendar (.ics)</button>
-            <button id="back-best" class="btn btn-ghost" type="button" hidden><svg class="i" aria-hidden="true"><use href="#i-reset"/></svg>Back to best time</button>
-          </div>
+            <button id="ics" class="btn btn-secondary" type="button"><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg>Add to calendar (.ics)</button>          </div>
         </div>
         <ul class="ans-people" id="ans-people" aria-label="Local time for each person"></ul>
         <p class="vh" id="ans-sentence"></p>
@@ -216,7 +224,7 @@
     </div>
   </main>
 
-  <aside id="ad-slot" class="ad-slot" aria-label="Advertisement"></aside>
+  <aside id="showcase" class="showcase-slot" aria-label="Our other apps"></aside>
 
   <footer class="foot">
     <p id="net" class="net" hidden><span class="net-dot" aria-hidden="true"></span><span id="net-text"></span></p>

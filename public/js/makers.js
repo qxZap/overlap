@@ -1,4 +1,4 @@
-// Our other apps, shown by adunit.js as a rotating ad. Plain links, no tracking beyond the utm_source in the URL.
+// Our other apps, shown by showcase.js as a rotating ad. Plain links, no tracking beyond the utm_source in the URL.
 // Logos are served from this site (img-src 'self'). A JS module because the CSP blocks fetching JSON,
 // and named makers.js, not ads.js: ad blockers block files called ads.js, which would break the page's import.
 // theme keys become --ad-<key> custom properties on each ad; copy comes from each product's own site.
