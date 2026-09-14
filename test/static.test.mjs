@@ -29,7 +29,8 @@ test('no en or em dashes in public/, README or notices', () => {
 
 test('page markup stays inside the CSP: no inline scripts, styles or handlers', () => {
   const html = readFileSync(join(pub, 'index.html'), 'utf8');
-  assert.doesNotMatch(html, /<script(?![^>]*\ssrc=)[^>]*>/i);
+  // JSON-LD is a data block the browser never executes, so the CSP allows it.
+  assert.doesNotMatch(html, /<script(?![^>]*\ssrc=)(?![^>]*type="application\/ld\+json")[^>]*>/i);
   assert.doesNotMatch(html, /<style|\sstyle=|\son[a-z]+=/i);
   // Page scripts run under connect-src 'none'. (sw.js has its own CSP and may fetch same origin.)
   for (const f of files.filter(f => f.startsWith('js/'))) {

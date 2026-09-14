@@ -89,7 +89,7 @@ export function mountAds(slot, ads) {
     const tabLogo = Object.assign(document.createElement('img'), { src: ad.logo, alt: '', width: 28, height: 28 });
     const seg = h('button', 'showcase-seg', tabLogo, h('span', 'showcase-seg-name', ad.title), h('i'));
     seg.type = 'button';
-    seg.setAttribute('aria-label', `Show ad ${i + 1} of ${ads.length}: ${ad.title}`);
+    seg.setAttribute('aria-label', `Show ${ad.title}, ${i + 1} of ${ads.length}`);
     seg.addEventListener('click', () => show(i));
     segs.push(seg);
     progress.append(seg);
@@ -97,8 +97,8 @@ export function mountAds(slot, ads) {
 
   const close = h('button', 'showcase-close', '×');
   close.type = 'button';
-  close.setAttribute('aria-label', 'Close ad');
-  const unit = setVars(h('div', 'showcase', h('span', 'showcase-badge', 'Ad'), close, stage, progress, timer), { 'sc-interval': `${INTERVAL}ms` });
+  close.setAttribute('aria-label', 'Close');
+  const unit = setVars(h('div', 'showcase', close, stage, progress, timer), { 'sc-interval': `${INTERVAL}ms` });
 
   unit.addEventListener('animationend', e => { if (e.animationName === 'sc-progress') show((index + 1) % slides.length); });
   // Pause while someone points at or tabs into the ad, and while the tab is hidden.

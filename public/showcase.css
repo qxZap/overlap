@@ -16,12 +16,6 @@
   .showcase .sc-motif { display: none; } /* beats the later .sc-motif-data/.sc-motif-redact display rules */
 }
 
-.showcase-badge {
-  position: absolute; z-index: 2; top: -.6rem; left: .75rem;
-  padding: .05rem .45rem; border-radius: 4px;
-  font-size: .75rem; font-weight: 700; letter-spacing: .04em; line-height: 1.4;
-  color: #1b2230; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
-}
 .showcase-close {
   position: absolute; z-index: 2; top: -.7rem; right: -.35rem;
   display: grid; place-items: center; width: 1.9rem; height: 1.9rem; padding: 0;
@@ -114,11 +108,6 @@
   .showcase { position: relative; inset: auto; max-width: none; margin: 0; }
   .showcase.is-dismissed { display: block; }
   .showcase-close { display: none; }
-  .showcase-badge {
-    position: static; display: block; margin: 0 0 .5rem; padding: 0;
-    color: inherit; background: none; box-shadow: none; opacity: .72;
-    letter-spacing: .08em; text-transform: uppercase;
-  }
   .sc-slide {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "motif" "brand" "head" "line" "cta";
