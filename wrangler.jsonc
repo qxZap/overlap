@@ -1,0 +1,7 @@
+// Cloudflare Workers static assets. No Worker script: every request is a static file,
+// so requests are free and _headers applies to all of them.
+{
+  "name": "overlap",
+  "compatibility_date": "2026-09-01",
+  "assets": { "directory": "./public" }
+}

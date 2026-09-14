@@ -1,0 +1,10 @@
+{
+  "name": "overlap",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "start": "node serve.mjs",
+    "test": "node --test"
+  }
+}

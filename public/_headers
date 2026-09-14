@@ -1,0 +1,16 @@
+# The page and its scripts get the strict policy.
+# Deliberately not "/*": Cloudflare joins matching rules, which would stack
+# connect-src 'none' onto /sw.js and stop it caching for offline use.
+/
+  Content-Security-Policy: default-src 'self'; connect-src 'none'; img-src 'self' data: blob:; frame-ancestors 'none'; form-action 'none'; base-uri 'none'
+/js/*
+  Content-Security-Policy: default-src 'self'; connect-src 'none'; img-src 'self' data: blob:; frame-ancestors 'none'; form-action 'none'; base-uri 'none'
+
+# The service worker may only talk to this same origin, to cache the app for offline use.
+/sw.js
+  Content-Security-Policy: default-src 'none'; connect-src 'self'
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
