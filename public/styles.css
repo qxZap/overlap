@@ -25,8 +25,9 @@
   --radius: 14px;
 }
 
+/* Dark follows the OS unless the viewer picked a theme (data-theme on the root wins both ways). */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #14110d;
     --surface: #1e1914;
     --ink: #f3eadf;
@@ -48,6 +49,29 @@
     --sel: #f3eadf;
   }
 }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #14110d;
+  --surface: #1e1914;
+  --ink: #f3eadf;
+  --muted: #b8a896;
+  --line: #382f26;
+  --line-strong: #7b6c5d;
+  --accent: #f0995a;
+  --accent-ink: #1b1009;
+  --focus: #8ab4ff;
+  --work: #e2a236;
+  --work-ink: #241700;
+  --awake: #5a4526;
+  --awake-dot: #7d6337;
+  --awake-ink: #f7e6c8;
+  --asleep: #0e1424;
+  --asleep-2: #1c2640;
+  --asleep-ink: #a9b8d8;
+  --sep: rgba(0, 0, 0, .35);
+  --sel: #f3eadf;
+}
+:root[data-theme="light"] { color-scheme: light; }
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -258,9 +282,14 @@ tfoot th, tfoot td { font-weight: 750; border-bottom: 0; }
 
 /* House ads */
 .makers h2 { font-size: .8125rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.makers ul { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
-.makers a { font-weight: 750; }
-.makers p { margin: .15rem 0 0; font-size: .875rem; color: var(--muted); }
+.makers ul { display: grid; gap: .75rem; margin: 0; padding: 0; list-style: none; }
+@media (min-width: 40rem) and (max-width: 63.99rem) { .makers ul { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* Logo and name on one row, the line under both, so it fits the narrow desktop column. */
+.makers a { display: grid; grid-template-columns: 2rem minmax(0, 1fr); align-items: center; align-content: start; gap: .45rem .6rem; height: 100%; padding: .75rem; color: var(--ink); text-decoration: none; border: 1px solid var(--line); border-radius: 10px; }
+.makers a:hover { border-color: var(--accent); }
+.makers img { display: block; width: 2rem; height: 2rem; border-radius: 7px; }
+.makers strong { font-weight: 750; color: var(--accent); }
+.makers small { grid-column: 1 / -1; font-size: .875rem; line-height: 1.45; color: var(--muted); }
 
 .foot { padding-block: 1.25rem 2.5rem; font-size: .875rem; color: var(--muted); border-top: 1px solid var(--line); }
 .foot p { margin: 0; }

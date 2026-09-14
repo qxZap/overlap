@@ -2,7 +2,7 @@
 import { analyze, dayRange, dateIn, hhmm, offsetAt, formatOffset, rate, clockChanges, checkZone, PAIN, HOUR_MS, SLOT_MS, DAY_MS, DEFAULT_START, DEFAULT_END } from './tz.js';
 import { encode, decode, MAX_PEOPLE, MAX_SLOTS } from './state.js';
 import { ics } from './ics.js';
-import ads from './ads.js';
+import makers from './makers.js';
 
 const $ = id => document.getElementById(id);
 const VIEWER = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
@@ -652,11 +652,12 @@ $('make-card').addEventListener('click', async () => {
   $('share-msg').textContent = 'Share card ready below.';
 });
 
-$('ads').replaceChildren(...ads.map(ad => {
+$('makers').replaceChildren(...makers.map(m => {
+  const a = Object.assign(document.createElement('a'), { href: m.url });
+  a.append(Object.assign(document.createElement('img'), { src: m.logo, alt: '', width: 32, height: 32 }),
+    el('strong', null, m.title), el('small', null, m.line));
   const li = el('li');
-  const a = el('a', null, ad.title);
-  a.href = ad.url;
-  li.append(a, el('p', null, ad.line));
+  li.append(a);
   return li;
 }));
 

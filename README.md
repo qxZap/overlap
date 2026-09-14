@@ -58,7 +58,7 @@ Tests cover the US and EU daylight saving mismatch (New York and London in March
 
 The script keeps name, ASCII name, country code, region and time zone, sorts by population and warns about (and drops) any time zone that Node's `Intl` does not accept. Country names come from `Intl.DisplayNames` at runtime. `tools/data/` is gitignored.
 
-City data is JS rather than JSON, and the house ads live in `public/js/ads.js` instead of `ads.json`, because the CSP sets `connect-src 'none'`, which blocks `fetch` and JSON module imports alike. The city file is loaded with a dynamic `import()` the first time someone focuses the city search.
+City data is JS rather than JSON, and the "From the makers" house ads (scrape.land, Penholder, Censory) live in `public/js/makers.js` with logos in `public/makers/`, instead of `ads.json` (nothing is named `ads`, since ad blockers block such files and a blocked import would break the page), because the CSP sets `connect-src 'none'`, which blocks `fetch` and JSON module imports alike. The city file is loaded with a dynamic `import()` the first time someone focuses the city search.
 
 The Open Graph image `public/og.png` is rendered from `tools/og.html`:
 
@@ -102,7 +102,7 @@ public/js/tz.js        time zone engine (pure, tested)
 public/js/state.js     URL hash encode and decode (pure, tested)
 public/js/ics.js       calendar file (pure, tested)
 public/js/card.js      share card canvas, loaded on demand
-public/js/ads.js       house ads
+public/js/makers.js    house ads ("From the makers"), logos in public/makers/
 public/js/cities.js    generated GeoNames data, loaded on demand
 public/sw.js           offline cache
 tools/                 city generator and OG image source
