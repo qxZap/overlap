@@ -21,21 +21,29 @@ const MOTIFS = {
     ...[['"title"', 0.9], ['"price"', 0.5], ['"in_stock"', 0.7], ['"rating"', 0.4]].map(([key, w], i) =>
       setVars(h('div', 'sc-row', h('span', 'sc-key', key), setVars(h('span', 'sc-val'), { w })), { i })),
     h('div', 'sc-beam')),
-  // Penholder: the item that matters most rises above the line
-  order: () => h('div', 'sc-motif sc-motif-order',
-    ...['Onboarding emails', 'Pricing page', 'Quarterly report', 'Fix checkout bug'].map((t, i, all) =>
-      h('div', i === all.length - 1 ? 'sc-item is-rising' : 'sc-item', t)),
-    h('div', 'sc-pen-line')),
-  // Censory: redaction bars close over the personal data in a document
-  redact: () => {
-    let n = 0;
-    return h('div', 'sc-motif sc-motif-redact',
-      ...[[92, 34, 40], [78, 8, 30], [96, 52, 30], [64, 0, 0], [84, 20, 46]].map(([len, l, w]) => {
-        const line = setVars(h('div', 'sc-text'), { len: `${len}%` });
-        if (w) line.append(setVars(h('span', 'sc-mark'), { l: `${l}%`, w: `${w}%`, i: n++ }));
-        return line;
-      }));
+  // Penholder: the team's list on a phone. The pen holder drags the item that matters most above the line
+  // and the rest slide down one place. Rows sit in 1.65rem slots, with a .7rem gap for the line after slot 2.
+  order: () => {
+    const Y = s => s * 1.65 + (s >= 2 ? 0.7 : 0);
+    const rem = v => `${+v.toFixed(3)}rem`;
+    // [text, destination slot]; the list starts in this order
+    const rows = [['Pricing page', 1], ['Onboarding emails', 2], ['Quarterly report', 3], ['Fix checkout bug', 0]];
+    const list = h('div', 'sc-list',
+      ...[0, 1, 2, 3].map(s => setVars(h('span', 'sc-rank', String(s + 1)), { y: rem(Y(s)) })),
+      setVars(h('span', 'sc-divider', 'Above the line'), { y: rem(Y(2) - 0.8) }),
+      ...rows.map(([text, to], from) => setVars(
+        h('div', to === 0 ? 'sc-card is-rising' : 'sc-card', text, ...(to === 0 ? [h('span', 'sc-finger')] : [])),
+        { y: rem(Y(from)), dy: rem(Y(to) - Y(from)) })));
+    return h('div', 'sc-motif sc-motif-order',
+      h('div', 'sc-phone', h('div', 'sc-screen',
+        h('div', 'sc-app-bar', h('span', null, 'Q3 priorities'), h('span', 'sc-pen')),
+        list)));
   },
+  // Censory: a scanned document with made-up personal data. Each value is detected, then blacked out.
+  redact: () => h('div', 'sc-motif sc-motif-redact',
+    h('div', 'sc-doc-title', 'Employment contract', h('span', null, 'Page 1')),
+    ...[['Name', 'Maria Ionescu'], ['CNP', '2850712123456'], ['Address', 'Str. Florilor 12, Cluj'], ['IBAN', 'RO49 AAAA 1B31 0075 9384'], ['Phone', '+40 712 345 678']]
+      .map(([label, value], i) => h('div', 'sc-doc-row', h('span', 'sc-doc-label', label), setVars(h('span', 'sc-pii', value), { i })))),
 };
 
 export function mountAds(slot, ads) {
