@@ -50,7 +50,7 @@ docker compose up --build    # http://localhost:8081
 npm test                     # node --test, no dependencies
 ```
 
-`serve.mjs` is a zero dependency static server that applies `public/_headers` the same way Cloudflare does, so the CSP you test locally is the one you ship.
+`serve.mjs` is a zero dependency static server that applies `public/_headers`, so the security headers can be checked locally.
 
 Tests cover the US and EU daylight saving mismatch (New York and London in March 2026), +05:30, +05:45 and +12:45 offsets, Lord Howe, 23 and 25 hour days, a team across the date line, the six city sample team on a normal date and on a mismatch date (checked against hand computed windows), URL round trip with awkward names, `.ics` structure and local time, the UI helpers (presets decode to valid zones, grouping by city, pointer position to a 15 minute window, keyboard steps, time typeahead, search highlighting), the service worker precache list, no en or em dashes, no inline scripts or styles, the page weight budget, and the response headers.
 
@@ -74,31 +74,20 @@ The Open Graph image `public/og.png` is rendered from `tools/og.html`:
 "C:/Program Files/Google/Chrome/Application/chrome.exe" --headless --hide-scrollbars --screenshot=<absolute path>/public/og.png --window-size=1200,630 file:///<absolute path>/tools/og.html
 ```
 
-## Deploy to Cloudflare
+## Security headers
 
-Cloudflare Workers static assets, set up in the dashboard. No `wrangler login` needed, nothing to build, and static asset requests are free.
-
-1. Push this repo to GitHub.
-2. In the Cloudflare dashboard: **Workers & Pages → Create → Import a repository**, then pick the repo.
-3. Leave the build command empty. Set the deploy command to `npx wrangler deploy` (it reads `wrangler.jsonc`, which serves `./public`).
-4. Deploy. Every push to the main branch deploys again.
-5. Add a custom domain under the Worker's **Settings → Domains & Routes**.
-6. Set `og:image` and `twitter:image` in `public/index.html` to the absolute URL on your domain (for example `https://overlap.example.com/og.png`); some social sites ignore relative image URLs.
-
-Alternative, Cloudflare Pages: **Workers & Pages → Create → Pages → Connect to Git**, framework preset None, build command empty, build output directory `public`. `_headers` works the same way.
-
-Check the headers after deploying:
+`public/_headers` sets the Content-Security-Policy. With `npm start` running:
 
 ```sh
-curl -I https://your-domain/          # Content-Security-Policy: default-src 'self'; connect-src 'none'; ...
-curl -I https://your-domain/sw.js     # Content-Security-Policy: default-src 'none'; connect-src 'self'
+curl -I http://localhost:8080/          # Content-Security-Policy: default-src 'self'; connect-src 'none'; ...
+curl -I http://localhost:8080/sw.js     # Content-Security-Policy: default-src 'none'; connect-src 'self'
 ```
 
-The page rules in `_headers` match `/` and `/js/*` rather than `/*` on purpose: Cloudflare joins every matching rule, and `connect-src 'none'` stacked onto `/sw.js` would stop the service worker from caching the app for offline use.
+The page rules match `/` and `/js/*` rather than `/*` on purpose: matching rules are joined, and `connect-src 'none'` stacked onto `/sw.js` would stop the service worker from caching the app for offline use.
 
 Lighthouse's SEO check reports that it cannot download `robots.txt`. It fetches the file from inside the page, and the page's `connect-src 'none'` blocks that; search engines request `robots.txt` directly and are not affected. Adding `connect-src 'self'` to the page rules turns the check green, at the cost of a looser policy.
 
-Traffic numbers come from the Cloudflare dashboard. There is no analytics script.
+There is no analytics script.
 
 ## Files
 
