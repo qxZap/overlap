@@ -3,5 +3,8 @@
 {
   "name": "overlap",
   "compatibility_date": "2026-09-01",
-  "assets": { "directory": "./public" }
+  "assets": { "directory": "./public" },
+  // Each deploy attaches the custom domain and creates its DNS record (the vibe-coding.fans zone is on this account).
+  "routes": [{ "pattern": "overlap.vibe-coding.fans", "custom_domain": true }],
+  "workers_dev": true
 }
