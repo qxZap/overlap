@@ -1,0 +1,170 @@
+/* Rotating ad unit, built by js/adunit.js into the page's .ad-slot element.
+   Small screens: an anchor bar fixed to the bottom edge, with a close button.
+   Wide screens (75rem and up): a half-page unit, sticky in the page's right rail.
+   Each ad paints itself from its brand theme (--ad-* set from makers.js), so it reads the same on any page theme. */
+
+.adunit {
+  position: fixed;
+  z-index: 40;
+  inset: auto .75rem calc(.75rem + env(safe-area-inset-bottom)) .75rem;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+.adunit.is-dismissed { display: none; }
+@media (max-width: 74.99rem) {
+  body.has-ad-anchor { padding-bottom: calc(6.5rem + env(safe-area-inset-bottom)); }
+  .adunit .ad-motif { display: none; } /* beats the later .ad-motif-data/.ad-motif-redact display rules */
+}
+
+.adunit-badge {
+  position: absolute; z-index: 2; top: -.6rem; left: .75rem;
+  padding: .05rem .45rem; border-radius: 4px;
+  font-size: .75rem; font-weight: 700; letter-spacing: .04em; line-height: 1.4;
+  color: #1b2230; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+}
+.adunit-close {
+  position: absolute; z-index: 2; top: -.7rem; right: -.35rem;
+  display: grid; place-items: center; width: 1.9rem; height: 1.9rem; padding: 0;
+  border: 0; border-radius: 50%; cursor: pointer; touch-action: manipulation;
+  font: 700 1.15rem/1 system-ui, sans-serif; color: #1b2230; background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+}
+.adunit-close::before { content: ""; position: absolute; inset: -.4rem; } /* 44px touch target around the 30px button */
+.adunit-close:hover { background: #eef1f6; }
+.adunit-close:focus-visible, .adunit-seg:focus-visible { outline: 3px solid #4d90fe; outline-offset: 2px; }
+
+.adunit-stage {
+  display: grid;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(10, 14, 24, .3), 0 2px 8px rgba(10, 14, 24, .2);
+  isolation: isolate;
+}
+.ad-slide {
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "brand head cta";
+  align-items: center;
+  gap: .75rem;
+  padding: .8rem .9rem 1.05rem;
+  color: var(--ad-fg);
+  background: var(--ad-bg);
+  text-decoration: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(.4rem);
+  transition: opacity .22s ease-in, transform .22s ease-in, visibility 0s linear .22s;
+}
+.ad-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: opacity .42s cubic-bezier(.2, .8, .2, 1), transform .42s cubic-bezier(.2, .8, .2, 1);
+}
+.ad-slide:focus-visible { outline: 3px solid var(--ad-accent); outline-offset: -3px; }
+.ad-motif, .ad-name, .ad-line { display: none; }
+.ad-brand { grid-area: brand; display: flex; align-items: center; gap: .6rem; }
+.ad-logo { display: block; width: 2.5rem; height: 2.5rem; border-radius: 10px; }
+.ad-headline {
+  grid-area: head;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  font-size: .9375rem; font-weight: 700; line-height: 1.3;
+}
+.ad-cta {
+  grid-area: cta;
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  min-height: 2.25rem; padding: .45rem .85rem; border-radius: 999px;
+  font-size: .8125rem; font-weight: 700; white-space: nowrap;
+  color: var(--ad-cta-ink); background: var(--ad-cta-bg);
+}
+.ad-arrow { transition: transform .2s ease-out; }
+.ad-slide:hover .ad-arrow, .ad-slide:focus-visible .ad-arrow { transform: translateX(.2rem); }
+@media (max-width: 26rem) {
+  .ad-cta { width: 2.25rem; padding: 0; }
+  .ad-cta-text { display: none; }
+}
+
+/* Timing. The anchor bar shows a thin timer line with no controls: tap targets on top of the ad link would overlap it.
+   The half-page unit shows a clickable segment per ad. Whichever is visible fills over the interval, then the next ad shows
+   (display: none elements run no animation, so only the visible one fires animationend). */
+.adunit-progress { display: none; }
+.adunit-timer { position: absolute; z-index: 1; left: 1rem; right: 1rem; bottom: .4rem; height: 3px; overflow: hidden; border-radius: 2px; background: rgba(255, 255, 255, .3); pointer-events: none; }
+.adunit-timer i, .adunit-seg i { position: absolute; inset: 0; border-radius: inherit; background: rgba(255, 255, 255, .92); transform: scaleX(0); transform-origin: left; }
+.adunit-timer.is-running i, .adunit-seg.is-active i { animation: ad-progress var(--ad-interval, 7s) linear forwards; }
+.adunit.is-paused :is(.adunit-timer.is-running, .adunit-seg.is-active) i,
+.adunit.is-hidden-tab :is(.adunit-timer.is-running, .adunit-seg.is-active) i { animation-play-state: paused; }
+.adunit-seg { position: relative; flex: 1; height: 4px; padding: 0; border: 0; border-radius: 2px; cursor: pointer; background: color-mix(in srgb, currentColor 18%, transparent); }
+.adunit-seg::before { content: ""; position: absolute; inset: -.6rem 0; }
+.adunit-seg i { background: currentColor; opacity: .75; }
+.adunit-seg.is-done i { transform: scaleX(1); }
+@keyframes ad-progress { to { transform: scaleX(1); } }
+
+@media (min-width: 75rem) {
+  .ad-slot { position: sticky; top: 1.5rem; align-self: start; }
+  .adunit { position: relative; inset: auto; max-width: none; margin: 0; }
+  .adunit.is-dismissed { display: block; }
+  .adunit-close { display: none; }
+  .adunit-badge {
+    position: static; display: block; margin: 0 0 .5rem; padding: 0;
+    color: inherit; background: none; box-shadow: none; opacity: .72;
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  .ad-slide {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "motif" "brand" "head" "line" "cta";
+    align-items: start;
+    align-content: start;
+    gap: .8rem;
+    padding: 1.1rem;
+  }
+  .ad-motif { display: block; grid-area: motif; }
+  .ad-name { display: inline; font-size: .9375rem; font-weight: 700; }
+  .ad-logo { width: 2rem; height: 2rem; border-radius: 8px; }
+  .ad-headline { display: block; font-size: 1.375rem; line-height: 1.2; letter-spacing: -.01em; text-wrap: balance; }
+  .ad-line { display: block; grid-area: line; font-size: .875rem; line-height: 1.5; color: var(--ad-muted); }
+  .ad-cta { justify-self: stretch; min-height: 2.75rem; margin-top: .2rem; font-size: .9375rem; }
+  .adunit-progress { display: flex; gap: .3rem; margin-top: .75rem; }
+  .adunit-timer { display: none; }
+}
+
+/* Motifs, only shown in the half-page unit */
+.ad-motif { position: relative; height: 10.5rem; overflow: hidden; border-radius: 12px; background: var(--ad-panel); }
+
+.ad-motif-data { display: grid; align-content: center; gap: .7rem; padding: 0 1.1rem; font: 500 .8125rem/1 "JetBrains Mono", ui-monospace, Consolas, monospace; }
+.ad-row { display: flex; align-items: center; gap: .6rem; }
+.ad-key { flex: 0 0 5.4rem; color: var(--ad-accent); }
+.ad-val { flex: 1; height: .55rem; border-radius: 4px; background: linear-gradient(90deg, var(--ad-accent), var(--ad-accent-2)); transform: scaleX(.06); transform-origin: left; opacity: .4; }
+.ad-slide.is-active .ad-val { animation: ad-fill .7s cubic-bezier(.2, .8, .2, 1) calc(.5s + var(--i) * .2s) forwards; }
+@keyframes ad-fill { to { transform: scaleX(var(--w)); opacity: 1; } }
+.ad-beam { position: absolute; left: 0; right: 0; top: -3rem; height: 3rem; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--ad-accent) 30%, transparent), transparent); }
+.ad-slide.is-active .ad-beam { animation: ad-beam 1.4s ease-in-out .15s 2; }
+@keyframes ad-beam { to { transform: translateY(13.5rem); } }
+
+/* Four 1.65rem items with .4rem gaps: one slot is 2.05rem, and the line sits between the second and third. */
+.ad-motif-order { padding: 1.4rem 1rem 0; }
+.ad-item { display: flex; align-items: center; height: 1.65rem; margin-bottom: .4rem; padding: 0 .65rem; border-radius: 7px; font-size: .75rem; font-weight: 600; color: var(--ad-fg); background: rgba(255, 255, 255, .15); }
+.ad-pen-line { position: absolute; left: .6rem; right: .6rem; top: calc(1.4rem + 2 * 2.05rem - .25rem); height: 2px; border-radius: 1px; background: var(--ad-accent); }
+.ad-slide.is-active .ad-item { animation: ad-sink .55s cubic-bezier(.3, .7, .2, 1) 1.1s forwards; }
+.ad-slide.is-active .ad-item.is-rising { animation: ad-rise .8s cubic-bezier(.3, .7, .2, 1) .8s forwards; }
+@keyframes ad-sink { to { transform: translateY(2.05rem); } }
+@keyframes ad-rise {
+  35% { transform: translateX(.4rem); color: var(--ad-cta-ink); background: var(--ad-cta-bg); }
+  100% { transform: translateY(-6.15rem); color: var(--ad-cta-ink); background: var(--ad-cta-bg); }
+}
+
+.ad-motif-redact { display: grid; align-content: center; gap: .7rem; padding: 0 1.25rem; }
+.ad-text { position: relative; width: var(--len); height: .5rem; border-radius: 3px; background: #cdc4b0; }
+.ad-mark { position: absolute; top: -.22rem; bottom: -.22rem; left: var(--l); width: var(--w); border-radius: 2px; background: #111a26; transform: scaleX(0); transform-origin: left; }
+.ad-slide.is-active .ad-mark { animation: ad-close .45s cubic-bezier(.2, .8, .2, 1) calc(.6s + var(--i) * .35s) forwards; }
+@keyframes ad-close { to { transform: scaleX(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  /* No autoplay and no scenes: the progress never runs, so the ad only changes when a segment is clicked. */
+  .ad-slide, .ad-slide.is-active, .ad-arrow { transition: none; }
+  .adunit *, .adunit *::before, .adunit *::after { animation: none !important; }
+  .adunit-seg.is-active i { transform: scaleX(1); }
+  .adunit-timer { display: none; }
+  .ad-val { transform: scaleX(var(--w)); opacity: 1; }
+  .ad-mark { transform: scaleX(1); }
+}

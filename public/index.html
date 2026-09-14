@@ -2,175 +2,251 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Overlap: when is everyone on your team actually awake?</title>
-<meta name="description" content="Add your team's cities, see when everyone is awake and working, and share one link. Daylight saving aware, works offline, no signup.">
+<meta name="description" content="Add your team's cities, see the best time to meet, and share one link. Daylight saving aware, works offline, no signup.">
 <meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#f8f2e8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#14110d" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B1220" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="adunit.css">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Overlap">
 <meta property="og:title" content="When is everyone on your team actually awake?">
-<meta property="og:description" content="One link, no signup. Add your team's cities, see the overlap, share it.">
+<meta property="og:description" content="One link, no signup. Add your team's cities, see the best time to meet, share it.">
 <meta property="og:image" content="/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Overlap: a day grid showing when a team in six cities is working, awake and asleep.">
+<meta property="og:image:alt" content="Overlap: a timeline showing when a team in six cities is working, awake and asleep, with the best time to meet highlighted.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="When is everyone on your team actually awake?">
-<meta name="twitter:description" content="One link, no signup. Add your team's cities, see the overlap, share it.">
+<meta name="twitter:description" content="One link, no signup. Add your team's cities, see the best time to meet, share it.">
 <meta name="twitter:image" content="/og.png">
 <script type="module" src="js/app.js"></script>
 </head>
-<body>
-<div class="horizon" aria-hidden="true"></div>
-<div class="wrap">
+<body class="is-empty is-booting">
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 5-8 12-8 12s-8-7-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-great" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></symbol>
+  <symbol id="i-fine" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-early" viewBox="0 0 24 24"><path d="M12 2v6M5 11l1.5 1.5M2 18h2M20 18h2M19 11l-1.5 1.5M22 22H2M9 5l3-3 3 3M16 18a4 4 0 0 0-8 0"/></symbol>
+  <symbol id="i-late" viewBox="0 0 24 24"><path d="M12 8V2M5 11l1.5 1.5M2 18h2M20 18h2M19 11l-1.5 1.5M22 22H2M15 5l-3 3-3-3M16 18a4 4 0 0 0-8 0"/></symbol>
+  <symbol id="i-asleep" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18M7 21h10M5 7h14M5 7l-3 7a3 3 0 0 0 6 0ZM19 7l-3 7a3 3 0 0 0 6 0Z"/></symbol>
+</svg>
+
+<div class="page">
   <header class="top">
     <p class="brand">
-      <svg class="mark" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect width="32" height="32" rx="8" fill="#2e3954"/><path d="M7 21a9 9 0 0 1 18 0z" fill="#f0b13c"/><rect x="5" y="23" width="22" height="2.5" rx="1.25" fill="#f8e3bb"/></svg>
+      <svg class="mark" viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#2563EB"/><circle cx="12.5" cy="16" r="6.5" fill="none" stroke="#fff" stroke-width="2.4"/><circle cx="19.5" cy="16" r="6.5" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M16 10.6a6.5 6.5 0 0 1 0 10.8 6.5 6.5 0 0 1 0-10.8Z" fill="#34D399"/></svg>
       Overlap
     </p>
-    <h1>When is everyone actually awake?</h1>
-    <p class="sub">Add your team's cities, see the overlap, share one link. No signup.</p>
+    <p class="top-note">No signup. Your team lives in the link.</p>
   </header>
 
-  <div class="layout">
-    <main>
-      <section class="card add" aria-labelledby="add-h">
-        <h2 id="add-h">Add a person</h2>
-        <form id="add-form" autocomplete="off" novalidate>
-          <div class="field">
-            <label for="add-name">Name <span class="muted">(optional)</span></label>
-            <input id="add-name" type="text" maxlength="40" autocomplete="off">
-          </div>
-          <div class="field combo">
-            <label for="add-city">City or time zone</label>
-            <input id="add-city" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="city-list" aria-describedby="add-msg" placeholder="Bucharest, Pune, or Asia/Kolkata" autocomplete="off" spellcheck="false">
-            <ul id="city-list" role="listbox" aria-label="Matching cities" hidden></ul>
-          </div>
-          <button class="btn" type="submit">Add</button>
-        </form>
-        <p id="add-msg" class="msg" aria-live="polite"></p>
-      </section>
+  <main id="main" class="main">
+    <section class="intro" id="intro">
+      <h1>When is everyone actually awake?</h1>
+      <p class="sub">Add your team's cities, see the best time to meet, share one link.</p>
+    </section>
 
-      <section class="card view" aria-labelledby="view-h">
-        <h2 id="view-h">The overlap</h2>
-        <div id="empty" class="empty">
-          <p class="empty-title">Nobody on the team yet.</p>
-          <p>Add people above, or load six cities that rarely agree: San Francisco, New York, London, Bucharest, Mumbai and Sydney.</p>
-          <button id="sample" class="btn" type="button">Try a sample team</button>
+    <section class="card team" aria-label="Your team">
+      <div class="combo">
+        <label for="add-city" class="combo-label">Add a city or time zone</label>
+        <div class="combo-field">
+          <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+          <input id="add-city" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="city-list" aria-describedby="add-help" placeholder="Bucharest, Pune or Asia/Kolkata" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done">
+          <ul id="city-list" class="options" role="listbox" aria-label="Matching places" hidden></ul>
+        </div>
+        <p id="add-help" class="combo-help">34,000 cities, down to small towns, or any IANA time zone.</p>
+      </div>
+      <div class="team-row" id="team-row" hidden>
+        <ul id="chips" class="chips" aria-label="Team members. Select a person to edit"></ul>
+        <button id="clear" class="btn btn-ghost btn-sm" type="button">Clear team</button>
+      </div>
+      <div class="starts" id="starts">
+        <button id="sample" class="btn btn-primary btn-lg" type="button" data-preset="sample"><svg class="i" aria-hidden="true"><use href="#i-users"/></svg>Try a sample team</button>
+        <p class="starts-label" id="presets-l">Or start from</p>
+        <ul class="presets" aria-labelledby="presets-l">
+          <li><button class="preset" type="button" data-preset="us-eu">US + Europe</button></li>
+          <li><button class="preset" type="button" data-preset="eu-in">Europe + India</button></li>
+          <li><button class="preset" type="button" data-preset="am-apac">Americas + Asia Pacific</button></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="preview" id="preview" aria-labelledby="preview-h">
+      <ol class="how">
+        <li><b>1</b>Add cities</li>
+        <li><b>2</b>See the best time</li>
+        <li><b>3</b>Share one link</li>
+      </ol>
+      <figure class="card ex" aria-describedby="preview-d">
+        <figcaption><span class="ex-tag" id="preview-h">Example</span><span class="ex-best">Best time to meet: 14:00 to 15:00</span></figcaption>
+        <div class="ex-grid" aria-hidden="true">
+          <span class="ex-name">New York</span><span class="ex-bar"><i class="run awake ex-a1"></i><i class="run awake ex-a2"></i><i class="run work ex-w1"></i><i class="run awake ex-a3"></i></span>
+          <span class="ex-name">London</span><span class="ex-bar"><i class="run awake ex-b1"></i><i class="run work ex-w2"></i><i class="run awake ex-b2"></i></span>
+          <span class="ex-name">Bucharest</span><span class="ex-bar"><i class="run awake ex-c1"></i><i class="run work ex-w3"></i><i class="run awake ex-c2"></i></span>
+          <span class="ex-band"></span>
+        </div>
+        <p class="ex-legend" id="preview-d"><span><i class="sw work"></i>Working</span><span><i class="sw awake"></i>Awake</span><span><i class="sw asleep"></i>Asleep</span><span><i class="sw best"></i>Everyone working</span></p>
+      </figure>
+    </section>
+
+    <div id="result" class="result" hidden>
+      <section class="card answer" aria-labelledby="ans-kicker">
+        <div class="ans-main">
+          <p class="kicker" id="ans-kicker">Best time to meet</p>
+          <h2 class="ans-time" id="ans-time" tabindex="-1"></h2>
+          <p class="ans-date"><span id="ans-date"></span><span id="ans-utc" class="ans-utc"></span></p>
+          <p class="ans-note" id="ans-note"></p>
+          <p class="ans-score"><span class="score" id="ans-score"></span><span class="score-help">Lower is fairer: great 0, fine 1, early or late 3, asleep 8 per person.</span></p>
+          <div class="ans-actions">
+            <button id="copy-link" class="btn btn-primary" type="button"><svg class="i" aria-hidden="true"><use href="#i-link"/></svg>Copy team link</button>
+            <button id="ics" class="btn btn-secondary" type="button"><svg class="i" aria-hidden="true"><use href="#i-calendar"/></svg>Add to calendar (.ics)</button>
+            <button id="back-best" class="btn btn-ghost" type="button" hidden><svg class="i" aria-hidden="true"><use href="#i-reset"/></svg>Back to best time</button>
+          </div>
+        </div>
+        <ul class="ans-people" id="ans-people" aria-label="Local time for each person"></ul>
+        <p class="vh" id="ans-sentence"></p>
+      </section>
+      <p class="vh" id="live" aria-live="polite"></p>
+
+      <section class="card day" aria-labelledby="day-h">
+        <div class="day-head">
+          <h2 id="day-h">Everyone's day</h2>
+          <p class="legend"><span><i class="sw work"></i>Working</span><span><i class="sw awake"></i>Awake</span><span><i class="sw asleep"></i>Asleep</span><span><i class="sw best"></i>Everyone working</span><span><i class="sw win"></i>Meeting</span></p>
+        </div>
+        <div class="toolbar">
+          <div class="datebox" role="group" aria-label="Date">
+            <button id="prev-day" class="icon-btn" type="button" aria-label="Previous day"><svg class="i" aria-hidden="true"><use href="#i-left"/></svg></button>
+            <label for="date" class="vh">Date</label>
+            <input id="date" class="input date" type="date" required>
+            <button id="next-day" class="icon-btn" type="button" aria-label="Next day"><svg class="i" aria-hidden="true"><use href="#i-right"/></svg></button>
+            <button id="today" class="btn btn-ghost btn-sm" type="button" hidden>Today</button>
+          </div>
+          <fieldset class="seg">
+            <legend class="vh">Show hours in</legend>
+            <label><input type="radio" name="ref" value="local" checked><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>Your time</label>
+            <label><input type="radio" name="ref" value="utc"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>UTC</label>
+          </fieldset>
+          <div class="len">
+            <label for="len">Meeting</label>
+            <select id="len" class="select">
+              <option value="30">30 min</option>
+              <option value="45">45 min</option>
+              <option value="60" selected>1 hour</option>
+              <option value="90">90 min</option>
+              <option value="120">2 hours</option>
+            </select>
+          </div>
+          <p id="dst" class="pill pill-warn" hidden><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg><span id="dst-text" aria-hidden="true"></span><span id="dst-full" class="vh"></span></p>
         </div>
 
-        <div id="result" hidden>
-          <div class="controls">
-            <div class="field">
-              <label for="date">Date</label>
-              <input id="date" type="date">
-            </div>
-            <button id="today" class="btn ghost" type="button" hidden>Back to today</button>
-            <fieldset class="seg">
-              <legend class="vh">Show hours in</legend>
-              <input type="radio" name="ref" id="ref-local" value="local" checked><label for="ref-local">Your time</label>
-              <input type="radio" name="ref" id="ref-utc" value="utc"><label for="ref-utc">UTC</label>
-            </fieldset>
-          </div>
-          <p id="dst" class="dst" hidden><b class="tag">DST</b><span id="dst-text"></span></p>
-
-          <p id="best" class="best" tabindex="-1"></p>
-          <p id="best-note" class="note"></p>
-
-          <div id="grid-scroll" class="grid-scroll">
-            <div id="grid" class="grid" role="group" aria-label="Hours of the day. Each hour button lists everyone's local time."></div>
-          </div>
-          <ul class="legend" aria-label="Legend">
-            <li><i class="sw work"></i>Working</li>
-            <li><i class="sw early"></i>Early or late, awake</li>
-            <li><i class="sw asleep"></i>Asleep</li>
-            <li><i class="sw best-sw"></i>Best time</li>
-            <li><i class="sw sel-sw"></i>Selected</li>
-          </ul>
-          <p class="hint">Tap or hover an hour to see everyone's local time. With a keyboard, use the arrow keys along the hours.</p>
-
-          <div class="slot">
-            <div class="slot-head">
-              <h3 id="slot-h">Selected time</h3>
-              <div class="field inline">
-                <label for="len">Length</label>
-                <select id="len">
-                  <option value="30">30 min</option>
-                  <option value="45">45 min</option>
-                  <option value="60" selected>1 hour</option>
-                  <option value="90">90 min</option>
-                  <option value="120">2 hours</option>
-                </select>
+        <div class="tl-scroll" id="tl-scroll">
+          <div class="tl" id="tl">
+            <div class="tl-labels" id="tl-labels"></div>
+            <div class="tl-track">
+              <div class="tl-ruler" id="tl-ruler" aria-hidden="true"></div>
+              <div class="tl-body" id="tl-body">
+                <div class="tl-rows" id="tl-rows"></div>
+                <div class="tl-best" id="tl-best" aria-hidden="true"></div>
+                <div class="tl-now" id="tl-now" aria-hidden="true" hidden></div>
+                <div class="tl-winwrap"><div class="tl-win" id="tl-win" role="slider" tabindex="0" aria-label="Meeting time" aria-describedby="tl-hint"><span class="tl-grip" aria-hidden="true"></span></div></div>
               </div>
             </div>
-            <p id="slot-when" class="when"></p>
-            <ul id="slot-people" class="ratings" aria-labelledby="slot-h"></ul>
-            <p class="score"><strong id="slot-score"></strong> <span class="muted">Points per person: great 0, fine 1, early or late 3, asleep 8. Lower is fairer.</span></p>
-            <div class="row">
-              <button id="pin" class="btn" type="button">Pin to compare</button>
-              <button id="slot-ics" class="btn ghost" type="button">Add to calendar (.ics)</button>
+          </div>
+        </div>
+        <p class="hint" id="tl-hint">Drag the green window or tap any time to try it. Arrow keys move it 15 minutes, Page Up and Page Down one hour.</p>
+      </section>
+
+      <details class="card more" id="compare-d">
+        <summary><svg class="i" aria-hidden="true"><use href="#i-scale"/></svg><span class="more-title">Compare times</span><span class="count" id="compare-count"></span><svg class="i chev" aria-hidden="true"><use href="#i-down"/></svg></summary>
+        <div class="more-body">
+          <p class="muted">Pin a few candidate times to see who stretches for each one, then pick the fairest.</p>
+          <button id="pin" class="btn btn-secondary" type="button"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg>Pin the selected time</button>
+          <div id="compare-table" class="table-scroll"></div>
+          <p id="rotate" class="callout" hidden></p>
+        </div>
+      </details>
+
+      <details class="card more" id="share-d">
+        <summary><svg class="i" aria-hidden="true"><use href="#i-share"/></svg><span class="more-title">Share</span><svg class="i chev" aria-hidden="true"><use href="#i-down"/></svg></summary>
+        <div class="more-body">
+          <label class="field-label" for="link-out">Team link. Anyone who opens it sees the same people and hours.</label>
+          <div class="link-row">
+            <input id="link-out" class="input" type="text" readonly>
+            <button id="copy-link-2" class="btn btn-secondary" type="button"><svg class="i" aria-hidden="true"><use href="#i-copy"/></svg>Copy</button>
+          </div>
+          <label class="check"><input type="checkbox" id="remember"><span class="box" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></span>Remember this team on this device</label>
+          <div class="share-card">
+            <button id="make-card" class="btn btn-secondary" type="button"><svg class="i" aria-hidden="true"><use href="#i-image"/></svg>Create share card</button>
+            <div id="card-out" class="card-out" hidden>
+              <canvas id="card" width="1200" height="627" role="img" aria-label="Share card"></canvas>
+              <a id="card-dl" class="btn btn-primary" download="overlap-team.png" href="#share-d"><svg class="i" aria-hidden="true"><use href="#i-download"/></svg>Download PNG</a>
+              <label class="field-label" for="li-text">LinkedIn post</label>
+              <textarea id="li-text" class="input" rows="5" readonly></textarea>
+              <button id="copy-li" class="btn btn-secondary" type="button"><svg class="i" aria-hidden="true"><use href="#i-copy"/></svg>Copy text</button>
+              <p class="muted">Tip: upload the image natively on LinkedIn, then put the link in the first comment.</p>
             </div>
-            <p id="slot-msg" class="msg" aria-live="polite"></p>
-          </div>
-
-          <div id="compare" class="compare" hidden>
-            <h3>Compare pinned times</h3>
-            <div id="compare-table" class="table-scroll"></div>
-            <p id="compare-more" class="muted">Pick another hour and pin it to compare.</p>
-            <p id="rotate" class="hint-box" hidden></p>
           </div>
         </div>
-      </section>
+      </details>
+    </div>
+  </main>
 
-      <section class="card team" aria-labelledby="team-h">
-        <h2 id="team-h">Your team</h2>
-        <p id="team-empty" class="muted">No one yet. Add a person above.</p>
-        <ol id="team" class="team-list"></ol>
-        <div class="row between">
-          <label class="check"><input type="checkbox" id="remember"> Remember this team on this device</label>
-          <button id="clear" class="btn ghost" type="button">Clear team</button>
-        </div>
-        <p id="team-msg" class="msg" aria-live="polite"></p>
-      </section>
-
-      <section class="card share" aria-labelledby="share-h">
-        <h2 id="share-h">Share</h2>
-        <p class="muted">The link holds the whole team, so anyone who opens it sees the same people and hours.</p>
-        <div class="field">
-          <label for="link-out">Team link</label>
-          <input id="link-out" type="text" readonly>
-        </div>
-        <div class="row">
-          <button id="copy-link" class="btn" type="button">Copy link</button>
-          <button id="make-card" class="btn ghost" type="button">Create share card</button>
-        </div>
-        <p id="share-msg" class="msg" aria-live="polite"></p>
-        <div id="card-out" hidden>
-          <canvas id="card" width="1200" height="627" role="img" aria-label="Share card"></canvas>
-          <div class="row"><a id="card-dl" class="btn" download="overlap-team.png">Download PNG</a></div>
-          <div class="field">
-            <label for="li-text">LinkedIn post</label>
-            <textarea id="li-text" rows="6" readonly></textarea>
-          </div>
-          <div class="row"><button id="copy-li" class="btn ghost" type="button">Copy text</button></div>
-          <p class="tip">Tip: upload the image natively on LinkedIn, then put the link in the first comment.</p>
-        </div>
-      </section>
-    </main>
-
-    <aside class="card makers" aria-labelledby="makers-h">
-      <h2 id="makers-h">From the makers</h2>
-      <ul id="makers"></ul>
-    </aside>
-  </div>
+  <aside id="ad-slot" class="ad-slot" aria-label="Advertisement"></aside>
 
   <footer class="foot">
-    <p>City data: <a href="https://www.geonames.org/">GeoNames</a>, licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Time zone math runs in your browser. No cookies, no tracking, works offline.</p>
+    <p id="net" class="net" hidden><span class="net-dot" aria-hidden="true"></span><span id="net-text"></span></p>
+    <p>City data: <a href="https://www.geonames.org/">GeoNames</a>, licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Time zone math runs in your browser. No cookies, no tracking.</p>
   </footer>
 </div>
+
+<dialog id="dlg" class="dlg" aria-labelledby="dlg-h">
+  <div class="dlg-head">
+    <span class="avatar avatar-lg" id="dlg-avatar" aria-hidden="true"></span>
+    <div class="dlg-title">
+      <h2 id="dlg-h"></h2>
+      <p id="dlg-sub" class="muted"></p>
+    </div>
+    <button class="icon-btn" id="dlg-close" type="button" aria-label="Close"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+  <div id="dlg-people" class="dlg-people"></div>
+  <div class="dlg-foot">
+    <div class="dlg-moves" role="group" aria-label="Order">
+      <button class="btn btn-ghost btn-sm" id="dlg-earlier" type="button"><svg class="i" aria-hidden="true"><use href="#i-left"/></svg>Move earlier</button>
+      <button class="btn btn-ghost btn-sm" id="dlg-later" type="button">Move later<svg class="i" aria-hidden="true"><use href="#i-right"/></svg></button>
+    </div>
+    <button class="btn btn-ghost btn-sm" id="dlg-add" type="button"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg><span id="dlg-add-text">Add another person here</span></button>
+    <button class="btn btn-primary" id="dlg-done" type="button">Done</button>
+  </div>
+  <div id="tp" class="picker" popover>
+    <ul id="tp-list" class="options" role="listbox" tabindex="-1"></ul>
+  </div>
+</dialog>
+
+<div id="toast" class="toast" role="status"><span id="toast-text"></span><button id="toast-undo" class="toast-btn" type="button" hidden>Undo</button></div>
 </body>
 </html>

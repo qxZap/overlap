@@ -4,39 +4,39 @@
 <head>
 <meta charset="utf-8">
 <style>
+  @font-face { font-family: "Plus Jakarta Sans"; src: url("../public/fonts/plus-jakarta-sans-latin.woff2") format("woff2"); font-weight: 400 800; }
   * { box-sizing: border-box; }
   html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
-  body { background: #f8f2e8; color: #2a2019; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
-  .horizon { height: 12px; background: linear-gradient(90deg, #2e3954 0 20%, #f8e3bb 30%, #f0b13c 40% 62%, #f8e3bb 72%, #2e3954 82%); }
-  .pad { padding: 40px 64px 0; }
-  .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 30px; color: #a9431a; }
-  h1 { margin: 22px 0 8px; font-size: 64px; line-height: 1; letter-spacing: -2px; font-weight: 850; }
-  p { margin: 0; font-size: 28px; color: #69594b; }
-  .grid { margin-top: 34px; position: relative; }
-  .hours, .row { display: grid; grid-template-columns: 200px repeat(96, 9px); align-items: center; }
-  .hours { height: 26px; font-size: 16px; font-weight: 600; color: #69594b; }
-  .hours span { grid-column: span 12; }
-  .row { height: 40px; margin-bottom: 4px; font-size: 21px; font-weight: 650; }
-  .row i { height: 40px; }
-  .work { background: #f0b13c; }
-  .awake { background: #f8e3bb; }
-  .asleep { background: #2e3954; }
-  .best { position: absolute; top: 20px; bottom: -4px; left: calc(200px + 44 * 9px); width: 36px; border: 5px solid #a9431a; border-radius: 8px; }
+  body { background: #F8FAFC; color: #0F172A; font-family: "Plus Jakarta Sans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .pad { padding: 44px 64px 0; }
+  .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 30px; letter-spacing: -.5px; }
+  h1 { margin: 26px 0 10px; font-size: 62px; line-height: 1.04; letter-spacing: -2px; font-weight: 800; }
+  p { margin: 0; font-size: 28px; color: #475569; }
+  p b { color: #047857; }
+  .grid { margin-top: 30px; position: relative; }
+  .hours, .row { display: grid; grid-template-columns: 200px 864px; align-items: center; }
+  .hours { height: 26px; font-size: 16px; font-weight: 600; color: #5B6B82; }
+  .hours div { display: grid; grid-template-columns: repeat(8, 1fr); }
+  .row { height: 38px; margin-bottom: 7px; font-size: 21px; font-weight: 650; }
+  .bar { display: flex; height: 38px; border-radius: 9px; overflow: hidden; }
+  .bar i { flex: 1; }
+  .work { background: #3B82F6; }
+  .awake { background: #DBEAFE; }
+  .asleep { background: repeating-linear-gradient(135deg, #1E293B 0 6px, #334155 6px 8px); background-attachment: fixed; }
+  .best { position: absolute; top: 20px; bottom: 1px; left: calc(200px + 44 * 9px); width: 36px; background: rgba(5, 150, 105, .16); border: 4px solid #059669; border-radius: 9px; }
 </style>
 </head>
 <body>
-<div class="horizon"></div>
 <div class="pad">
-  <div class="brand"><svg viewBox="0 0 32 32" width="40" height="40"><rect width="32" height="32" rx="8" fill="#2e3954"/><path d="M7 21a9 9 0 0 1 18 0z" fill="#f0b13c"/><rect x="5" y="23" width="22" height="2.5" rx="1.25" fill="#f8e3bb"/></svg>Overlap</div>
+  <div class="brand"><svg viewBox="0 0 32 32" width="40" height="40"><rect width="32" height="32" rx="9" fill="#2563EB"/><circle cx="12.5" cy="16" r="6.5" fill="none" stroke="#fff" stroke-width="2.4"/><circle cx="19.5" cy="16" r="6.5" fill="none" stroke="#fff" stroke-width="2.4"/><path d="M16 10.6a6.5 6.5 0 0 1 0 10.8 6.5 6.5 0 0 1 0-10.8Z" fill="#34D399"/></svg>Overlap</div>
   <h1>When is everyone actually awake?</h1>
-  <p>Add your team's cities, see the overlap, share one link. No signup.</p>
-  <div class="grid" id="grid"><div class="hours" id="hours"><span></span></div><div class="best"></div></div>
+  <p>Add your team's cities, see <b>the best time to meet</b>, share one link.</p>
+  <div class="grid" id="grid"><div class="hours"><span></span><div id="hours"></div></div><div class="best"></div></div>
 </div>
 <script>
   // Hours in UTC for a September week: working 09 to 17, awake 07 to 23 local.
   const team = [['San Francisco', -7], ['New York', -4], ['London', 1], ['Bucharest', 3], ['Mumbai', 5.5], ['Sydney', 10]];
   const hours = document.getElementById('hours');
-  hours.firstChild.style.gridColumn = 'auto';
   for (let h = 0; h < 24; h += 3) hours.insertAdjacentHTML('beforeend', `<span>${String(h).padStart(2, '0')}:00 UTC</span>`);
   const grid = document.getElementById('grid');
   for (const [city, off] of team) {
@@ -45,7 +45,7 @@
       const local = (q / 4 + off + 24) % 24;
       cells += `<i class="${local >= 9 && local < 17 ? 'work' : local >= 7 && local < 23 ? 'awake' : 'asleep'}"></i>`;
     }
-    grid.insertAdjacentHTML('beforeend', `<div class="row"><span>${city}</span>${cells}</div>`);
+    grid.insertAdjacentHTML('beforeend', `<div class="row"><span>${city}</span><div class="bar">${cells}</div></div>`);
   }
 </script>
 </body>

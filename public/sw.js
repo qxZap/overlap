@@ -1,17 +1,21 @@
 // Offline support: precache every static file, then serve network first with the cache as fallback.
 // Bump CACHE when this list changes. test/static.test.mjs checks the list matches public/.
-const CACHE = 'overlap-v2';
+const CACHE = 'overlap-v3';
 const FILES = [
   "./",
   "styles.css",
+  "adunit.css",
   "favicon.svg",
   "og.png",
   "robots.txt",
+  "fonts/plus-jakarta-sans-latin.woff2",
   "js/app.js",
   "js/tz.js",
   "js/state.js",
   "js/ics.js",
+  "js/ui.js",
   "js/card.js",
+  "js/adunit.js",
   "js/makers.js",
   "makers/censory.svg",
   "makers/penholder.svg",
