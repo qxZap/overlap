@@ -186,7 +186,8 @@ a { color: var(--primary); text-underline-offset: 3px; }
 .mark { display: block; }
 .top-note { font-size: var(--fs-14); color: var(--text-2); }
 
-.intro { padding-block: var(--s4) 0; }
+.intro { padding-block: var(--s1) 0; }
+.intro .kicker { margin-bottom: var(--s3); }
 h1 { max-width: 16ch; font-size: clamp(2.125rem, 1.4rem + 3.2vw, var(--fs-44)); line-height: 1.08; letter-spacing: -.035em; font-weight: 800; text-wrap: balance; }
 .sub { margin-top: var(--s3); max-width: 40ch; font-size: var(--fs-18); color: var(--text-2); }
 /* Until app.js has read the link, show nothing below the header: a shared team would otherwise flash the empty state and jump. */
@@ -607,6 +608,30 @@ td .rate { margin-right: .375rem; }
 .toast-btn { min-height: 2.5rem; padding: 0 .875rem; font: 700 var(--fs-14)/1 var(--font); color: inherit; background: transparent; border: 1px solid color-mix(in srgb, currentColor 45%, transparent); border-radius: var(--r-sm); cursor: pointer; }
 .toast-btn:hover { background: color-mix(in srgb, currentColor 14%, transparent); }
 @media (max-width: 74.99rem) { body.has-showcase-bar .toast { bottom: calc(6.75rem + env(safe-area-inset-bottom)); } }
+
+/* ---------- guide: how-to, explainer and FAQ, always below the tool ---------- */
+.guide { grid-column: 1 / -1; display: grid; gap: var(--s4); margin-top: var(--s6); }
+@media (min-width: 40rem) { .guide { gap: var(--s5); } }
+@media (min-width: 64rem) {
+  .guide { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .guide-how { grid-row: span 2; }
+  .faq { grid-column: 1 / -1; }
+}
+.guide h2 { font-size: var(--fs-24); font-weight: 750; line-height: 1.25; letter-spacing: -.02em; text-wrap: balance; }
+.guide h3 { font-size: var(--fs-18); font-weight: 700; line-height: 1.35; letter-spacing: -.01em; }
+.guide p, .guide li { max-width: 68ch; color: var(--text-2); }
+.guide b { font-weight: 700; color: var(--text); }
+.guide .card > * + * { margin-top: var(--s3); }
+.guide ul, .guide ol { display: grid; gap: var(--s3); margin-bottom: 0; padding: 0; list-style: none; }
+.steps { counter-reset: step; }
+.steps li { position: relative; min-height: 1.75rem; padding-left: 2.75rem; counter-increment: step; }
+.steps li::before {
+  content: counter(step); position: absolute; left: 0; top: -.125rem; display: grid; place-items: center; width: 1.75rem; height: 1.75rem;
+  font-size: var(--fs-14); font-weight: 800; color: var(--primary-ink); background: var(--primary-soft); border-radius: 50%;
+}
+.guide .faq-list { display: grid; gap: var(--s5) var(--s8); margin-top: var(--s5); }
+@media (min-width: 48rem) { .faq-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.faq-list p { margin-top: var(--s2); }
 
 /* ---------- footer ---------- */
 .foot { display: grid; gap: var(--s2); margin-top: var(--s8); padding-block: var(--s6) var(--s10); font-size: var(--fs-14); color: var(--text-2); border-top: 1px solid var(--border); }

@@ -52,7 +52,7 @@ npm test                     # node --test, no dependencies
 
 `serve.mjs` is a zero dependency static server that applies `public/_headers`, so the security headers can be checked locally.
 
-Tests cover the US and EU daylight saving mismatch (New York and London in March 2026), +05:30, +05:45 and +12:45 offsets, Lord Howe, 23 and 25 hour days, a team across the date line, the six city sample team on a normal date and on a mismatch date (checked against hand computed windows), URL round trip with awkward names, `.ics` structure and local time, the UI helpers (presets decode to valid zones, grouping by city, pointer position to a 15 minute window, keyboard steps, time typeahead, search highlighting), the service worker precache list, no en or em dashes, no inline scripts or styles, the page weight budget, and the response headers.
+Tests cover the US and EU daylight saving mismatch (New York and London in March 2026), +05:30, +05:45 and +12:45 offsets, Lord Howe, 23 and 25 hour days, a team across the date line, the six city sample team on a normal date and on a mismatch date (checked against hand computed windows), URL round trip with awkward names, `.ics` structure and local time, the UI helpers (presets decode to valid zones, grouping by city, pointer position to a 15 minute window, keyboard steps, time typeahead, search highlighting), the service worker precache list, no en or em dashes, no inline scripts or styles, the FAQ structured data matching the visible FAQ, the page weight budget, and the response headers.
 
 ## City data
 
@@ -105,6 +105,7 @@ public/js/card.js      share card canvas, loaded on demand
 public/js/showcase.js    house ad unit
 public/js/makers.js    house ad copy, logos in public/makers/
 public/js/cities.js    generated GeoNames data, loaded on demand
+public/llms.txt        plain text summary for AI assistants
 public/sw.js           offline cache
 tools/                 city generator, OG image source, font license
 ```

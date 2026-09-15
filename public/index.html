@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Overlap: when is everyone on your team actually awake?</title>
-<meta name="description" content="Add your team's cities, see the best time to meet, and share one link. Daylight saving aware, works offline, no signup.">
+<title>Time Zone Overlap Calculator and Meeting Planner | Overlap</title>
+<meta name="description" content="Find the best time to meet across time zones. Add your team's cities, see when working hours overlap, then share one link. Free, no signup, works offline.">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0B1220" media="(prefers-color-scheme: dark)">
@@ -20,15 +20,15 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="Overlap">
-<meta property="og:title" content="When is everyone on your team actually awake?">
-<meta property="og:description" content="One link, no signup. Add your team's cities, see the best time to meet, share it.">
+<meta property="og:title" content="Time zone overlap calculator and meeting planner">
+<meta property="og:description" content="See when your team's working hours overlap and find the best time to meet across time zones. One link, no signup.">
 <meta property="og:image" content="https://overlap.vibe-coding.fans/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Overlap: a timeline showing when a team in six cities is working, awake and asleep, with the best time to meet highlighted.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="When is everyone on your team actually awake?">
-<meta name="twitter:description" content="One link, no signup. Add your team's cities, see the best time to meet, share it.">
+<meta name="twitter:title" content="Time zone overlap calculator and meeting planner">
+<meta name="twitter:description" content="See when your team's working hours overlap and find the best time to meet across time zones. One link, no signup.">
 <meta name="twitter:image" content="https://overlap.vibe-coding.fans/og.png">
 <script type="application/ld+json">
 {
@@ -36,14 +36,42 @@
   "@type": "WebApplication",
   "name": "Overlap",
   "url": "https://overlap.vibe-coding.fans/",
-  "description": "Add your team's cities, see when everyone is awake and the best time to meet, and share one link. Daylight saving aware, no signup.",
+  "description": "A time zone overlap calculator and meeting planner. Add your team's cities, see when everyone's working hours overlap and the best time to meet, and share one link. Daylight saving aware, no signup.",
   "applicationCategory": "BusinessApplication",
+  "featureList": [
+    "Best meeting time across multiple time zones",
+    "Working hours overlap timeline for up to 50 people",
+    "Custom working hours per person, including night shifts",
+    "Daylight saving aware, including the weeks the US and Europe switch on different Sundays",
+    "Half and quarter hour offsets such as UTC+05:30 and UTC+05:45",
+    "Ratings and a pain score when no hour works for everyone",
+    "Compare up to four candidate times",
+    "Calendar export as an .ics file",
+    "Shareable team link, no signup",
+    "Search about 34,000 cities or any IANA time zone",
+    "Works offline"
+  ],
   "operatingSystem": "Any (web browser)",
   "browserRequirements": "Requires JavaScript",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "image": "https://overlap.vibe-coding.fans/og.png",
   "isPartOf": { "@type": "WebSite", "name": "vibe-coding.fans", "url": "https://vibe-coding.fans/" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    { "@type": "Question", "name": "How do I plan a meeting across 3 or more time zones?", "acceptedAnswer": { "@type": "Answer", "text": "Add one person per city and Overlap lines up every time zone on a single timeline, with the best time to meet highlighted. It works the same for 3 time zones or 30, and a team can have up to 50 people. If no hour has everyone working, it suggests the fairest compromise instead." } },
+    { "@type": "Question", "name": "What if no time works for everyone?", "acceptedAnswer": { "@type": "Answer", "text": "Overlap picks the window that asks the least of the team: an hour just before or after work counts for less than an hour when someone is asleep. Each person's local time is rated great, fine, early, late or asleep. Pin up to four candidate times to compare them, and for a regular meeting, take turns so the same people are not always the ones stretching." } },
+    { "@type": "Question", "name": "Can I set different working hours for each person?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Everyone starts with 09:00 to 17:00 in their own time zone. Select a person to change their hours in 15 minute steps, for example 10:00 to 18:30 or a night shift that crosses midnight, and the best time updates straight away." } },
+    { "@type": "Question", "name": "How do I schedule a Zoom, Google Meet or Microsoft Teams meeting across time zones?", "acceptedAnswer": { "@type": "Answer", "text": "Pick the time in Overlap, choose Add to calendar (.ics), and open or import the file in Google Calendar, Outlook or Apple Calendar. The file stores the time in UTC, so the event lands at the right local time, with every teammate's local time and the team link in its notes. Add a Zoom, Meet or Teams link to the event as you normally would and invite the team: each guest's calendar shows it in their own time zone." } },
+    { "@type": "Question", "name": "Can I use Overlap as a world clock or time difference calculator?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. City search shows each place's current local time and UTC offset, and the team chips and timeline show every teammate's local time. Switch the timeline between your time and UTC, or pick a later date to see how the time difference changes after a daylight saving switch." } },
+    { "@type": "Question", "name": "Do my teammates need an account to see the plan?", "acceptedAnswer": { "@type": "Answer", "text": "No. The team is stored in the link itself, after the # sign, so anyone who opens it sees the same people, working hours and pinned times. Browsers do not send that part of the address to the server, and there are no cookies or tracking. Tick Remember this team on this device to have it open next time." } },
+    { "@type": "Question", "name": "Is Overlap free, and does it work offline?", "acceptedAnswer": { "@type": "Answer", "text": "Yes to both. Overlap is free and open source under the MIT License, all time zone math runs in your browser, and after the first visit the app is cached, so it keeps working without a connection." } }
+  ]
 }
 </script>
 <script type="module" src="js/app.js"></script>
@@ -89,6 +117,7 @@
 
   <main id="main" class="main">
     <section class="intro" id="intro">
+      <p class="kicker">Time zone overlap calculator and meeting planner</p>
       <h1>When is everyone actually awake?</h1>
       <p class="sub">Add your team's cities, see the best time to meet, share one link.</p>
     </section>
@@ -244,6 +273,70 @@
         </div>
       </details>
     </div>
+
+    <div class="guide">
+      <section class="card guide-how" id="how" aria-labelledby="how-h">
+        <h2 id="how-h">How to find the best meeting time across time zones</h2>
+        <p>Add everyone's city, read the time when all working hours overlap, then share it as a link or a calendar invite. Step by step:</p>
+        <ol class="steps">
+          <li><b>Add each teammate's city.</b> Type a city or an IANA time zone such as Asia/Kolkata. Names are optional, and people in the same city sit together.</li>
+          <li><b>Set working hours where they differ.</b> Everyone starts at 09:00 to 17:00 local time. Select a person to change their hours, including shifts that cross midnight.</li>
+          <li><b>Read the best time.</b> Overlap picks the longest stretch when everyone is working. If there is none, it picks the window that asks the least of the team and rates each person's local time.</li>
+          <li><b>Try other times.</b> Drag the green window on the timeline, change the meeting length, or pin up to four times to compare who stretches for each.</li>
+          <li><b>Share it.</b> Copy the team link, or add the meeting to your calendar with the .ics file.</li>
+        </ol>
+      </section>
+
+      <section class="card" id="overlap" aria-labelledby="overlap-h">
+        <h2 id="overlap-h">What does working hours overlap mean?</h2>
+        <p>Working hours overlap is the part of the day when everyone on a team is inside their own working hours at the same time, so a live call costs nobody an early start or a late night. When a job post asks for overlap with team working hours, it usually means being available for some of those shared hours each day.</p>
+        <p>For example, New York and London are usually 5 hours apart. If both work 09:00 to 17:00, New York's morning meets London's afternoon and they share 3 hours: 09:00 to 12:00 in New York, which is 14:00 to 17:00 in London. Add Bucharest, 2 hours ahead of London, and the three cities share just 1 hour.</p>
+        <p>For about three weeks in March and one week around the start of November, New York and London are only 4 hours apart, and their overlap grows to 4 hours.</p>
+      </section>
+
+      <section class="card" id="daylight-saving" aria-labelledby="daylight-saving-h">
+        <h2 id="daylight-saving-h">How do daylight saving and odd offsets change the overlap?</h2>
+        <p>Offsets are not fixed, so Overlap reads them from your browser's time zone data for the date you pick instead of assuming a number of hours.</p>
+        <ul>
+          <li><b>Clocks change on different Sundays.</b> The US switches on the second Sunday in March and the first Sunday in November; the UK and the EU switch on the last Sunday in March and October. In between, a recurring meeting set in one city's time moves by an hour for the other. Overlap flags any clock change in the two weeks from the date you are viewing.</li>
+          <li><b>Not every offset is a whole hour.</b> India is UTC+05:30 all year and Nepal is UTC+05:45, so shared hours often start on a half or quarter hour. London and Bengaluru share 3.5 hours in the British summer, 09:00 to 12:30 in London, and 2.5 hours in winter. Overlap works in 15 minute steps, so these windows come out exact.</li>
+        </ul>
+      </section>
+
+      <section class="card faq" id="faq" aria-labelledby="faq-h">
+        <h2 id="faq-h">Questions about planning meetings across time zones</h2>
+        <div class="faq-list">
+          <div>
+            <h3>How do I plan a meeting across 3 or more time zones?</h3>
+            <p>Add one person per city and Overlap lines up every time zone on a single timeline, with the best time to meet highlighted. It works the same for 3 time zones or 30, and a team can have up to 50 people. If no hour has everyone working, it suggests the fairest compromise instead.</p>
+          </div>
+          <div>
+            <h3>What if no time works for everyone?</h3>
+            <p>Overlap picks the window that asks the least of the team: an hour just before or after work counts for less than an hour when someone is asleep. Each person's local time is rated great, fine, early, late or asleep. Pin up to four candidate times to compare them, and for a regular meeting, take turns so the same people are not always the ones stretching.</p>
+          </div>
+          <div>
+            <h3>Can I set different working hours for each person?</h3>
+            <p>Yes. Everyone starts with 09:00 to 17:00 in their own time zone. Select a person to change their hours in 15 minute steps, for example 10:00 to 18:30 or a night shift that crosses midnight, and the best time updates straight away.</p>
+          </div>
+          <div>
+            <h3>How do I schedule a Zoom, Google Meet or Microsoft Teams meeting across time zones?</h3>
+            <p>Pick the time in Overlap, choose Add to calendar (.ics), and open or import the file in Google Calendar, Outlook or Apple Calendar. The file stores the time in UTC, so the event lands at the right local time, with every teammate's local time and the team link in its notes. Add a Zoom, Meet or Teams link to the event as you normally would and invite the team: each guest's calendar shows it in their own time zone.</p>
+          </div>
+          <div>
+            <h3>Can I use Overlap as a world clock or time difference calculator?</h3>
+            <p>Yes. City search shows each place's current local time and UTC offset, and the team chips and timeline show every teammate's local time. Switch the timeline between your time and UTC, or pick a later date to see how the time difference changes after a daylight saving switch.</p>
+          </div>
+          <div>
+            <h3>Do my teammates need an account to see the plan?</h3>
+            <p>No. The team is stored in the link itself, after the # sign, so anyone who opens it sees the same people, working hours and pinned times. Browsers do not send that part of the address to the server, and there are no cookies or tracking. Tick Remember this team on this device to have it open next time.</p>
+          </div>
+          <div>
+            <h3>Is Overlap free, and does it work offline?</h3>
+            <p>Yes to both. Overlap is free and open source under the MIT License, all time zone math runs in your browser, and after the first visit the app is cached, so it keeps working without a connection.</p>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
   <aside id="showcase" class="showcase-slot" aria-label="Our other apps"></aside>
@@ -251,6 +344,7 @@
   <footer class="foot">
     <p id="net" class="net" hidden><span class="net-dot" aria-hidden="true"></span><span id="net-text"></span></p>
     <p>A <a href="https://vibe-coding.fans/">vibe-coding.fans</a> project. <a href="https://github.com/qxZap/overlap">Source on GitHub</a>, MIT License.</p>
+    <p>More free tools from <a href="https://vibe-coding.fans/">vibe-coding.fans</a>: <a href="https://pastesafe.vibe-coding.fans/">PasteSafe, which masks API keys and personal data in logs</a>, and <a href="https://bridge-days.vibe-coding.fans/">BridgeDays, a planner that turns annual leave into long breaks</a>.</p>
     <p>City data: <a href="https://www.geonames.org/">GeoNames</a>, licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Time zone math runs in your browser. No cookies, no tracking.</p>
   </footer>
 </div>

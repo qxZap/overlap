@@ -1,0 +1,16 @@
+# Overlap
+
+> A free time zone overlap calculator and meeting planner: add your team's cities, see when everyone's working hours overlap, and share one link.
+
+Overlap puts a whole team on one 24 hour timeline, colored by who is working, awake or asleep, and highlights the best time to meet. When no hour has everyone working, it picks the window that asks the least of the team and rates each person's local time as great, fine, early, late or asleep. It handles daylight saving changes, the weeks when the US and Europe switch clocks on different Sundays, and offsets like India's UTC+05:30 and Nepal's UTC+05:45.
+
+There is no account and no server-side storage. The team (names, cities, time zones, working hours, pinned times) is encoded in the part of the link after the # sign, which browsers do not send to the server, so sharing the link shares the plan. A chosen time can be exported as an .ics calendar file for Google Calendar, Outlook or Apple Calendar, and from there turned into a Zoom, Google Meet or Microsoft Teams meeting.
+
+It searches about 34,000 cities or any IANA time zone, runs all time zone math in the browser, works offline after the first visit, and is open source under the MIT License.
+
+## Links
+
+- [Overlap](https://overlap.vibe-coding.fans/): the live app
+- [FAQ](https://overlap.vibe-coding.fans/#faq): questions about planning meetings across time zones
+- [Source code](https://github.com/qxZap/overlap): GitHub repository, MIT License
+- [vibe-coding.fans](https://vibe-coding.fans/): more free tools from the same makers

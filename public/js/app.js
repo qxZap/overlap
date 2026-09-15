@@ -154,11 +154,14 @@ function update({ keep = false, scroll = false } = {}) {
 }
 
 function load() {
+  // A plain anchor such as #faq is not a team: keep the team on screen (and put its link back), or open the remembered one.
+  const team = location.hash.includes('=') ? location.hash.slice(1) : '';
+  if (!team && location.hash.length > 1 && state.people.length) { update({ keep: true }); return; }
   let saved = null;
   try { saved = localStorage.getItem(STORE); } catch { /* storage blocked */ }
   remember = saved != null;
   $('remember').checked = remember;
-  state = decode(location.hash.slice(1) || saved || '');
+  state = decode(team || saved || '');
   if ($('dlg').open) $('dlg').close();
   update({ scroll: true });
   $('compare-d').open = state.slots.length > 0;
@@ -943,11 +946,14 @@ setInterval(() => {
 
 mountAds($('showcase'), makers);
 window.addEventListener('hashchange', load);
+// load() rewrites the URL before the browser gets to scroll to a #faq style anchor, so scroll to it here.
+const anchor = location.hash.includes('=') ? null : document.getElementById(location.hash.slice(1));
 load();
 document.body.classList.remove('is-booting');
+anchor?.scrollIntoView();
 renderNet();
 // Ready to type on a first visit with a mouse; on touch screens a keyboard popping up would hide the quick starts.
-if (!state.people.length && matchMedia('(pointer: fine)').matches) $('add-city').focus();
+if (!state.people.length && matchMedia('(pointer: fine)').matches) $('add-city').focus({ preventScroll: true }); // never undo a jump to #faq
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').catch(() => {});

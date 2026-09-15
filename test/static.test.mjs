@@ -38,6 +38,18 @@ test('page markup stays inside the CSP: no inline scripts, styles or handlers', 
   }
 });
 
+test('structured data parses and the FAQPage matches the visible FAQ word for word', () => {
+  const html = readFileSync(join(pub, 'index.html'), 'utf8');
+  const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1]));
+  assert.ok(blocks.some(b => b['@type'] === 'WebApplication'));
+  const faq = blocks.find(b => b['@type'] === 'FAQPage');
+  const text = s => s.replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
+  const section = html.slice(html.indexOf('id="faq"'), html.indexOf('</section>', html.indexOf('id="faq"')));
+  const visible = [...section.matchAll(/<h3[^>]*>([\s\S]*?)<\/h3>\s*<p>([\s\S]*?)<\/p>/g)].map(m => [text(m[1]), text(m[2])]);
+  assert.ok(visible.length >= 6);
+  assert.deepEqual(faq.mainEntity.map(q => [q.name, q.acceptedAnswer.text]), visible);
+});
+
 test('page weight under 300 KB gzipped, excluding city data', () => {
   const page = files.filter(f => !['js/cities.js', 'og.png', '_headers', 'robots.txt'].includes(f));
   const bytes = page.reduce((sum, f) => sum + gzipSync(readFileSync(join(pub, f))).length, 0);
