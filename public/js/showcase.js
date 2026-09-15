@@ -1,7 +1,11 @@
-// Rotating ad unit for our own apps (data in makers.js). showcase.css switches the layout:
-// an anchor bar fixed to the bottom of small screens (dismissible), a half-page unit in the right rail of wide ones.
-// Plain links, no tracking, no network: logos are local files and every animation is CSS.
-const INTERVAL = 7000; // ms each ad stays up; the progress segment's CSS animation runs for this long, then the next ad shows
+// Ads for our own apps (data in makers.js). showcase.css switches the layout:
+// wide screens stack up to three cards in the right rail and, when there are more ads than that, slide the stack up
+// one card at a time, so it always shows three however many there are; small screens show one ad at a time in a
+// dismissible bar fixed to the bottom. Plain links, no tracking, no network: logos are local files and every animation is CSS.
+const INTERVAL = 6000; // ms between moves; the timer's CSS animation runs this long, then the next ad comes in
+const RAIL_CARDS = 3;
+const RAIL = matchMedia('(min-width: 75rem)');
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)');
 
 const h = (tag, className, ...kids) => {
   const e = document.createElement(tag);
@@ -14,7 +18,7 @@ const setVars = (e, vars, prefix = '') => {
   return e;
 };
 
-// One small animated scene per product, made of plain elements and animated by showcase.css while the ad is showing.
+// One small animated scene per product, made of plain elements and animated by showcase.css while the card is showing.
 const MOTIFS = {
   // scrape.land: fields of a page resolve into structured values while a scan beam passes
   data: () => h('div', 'sc-motif sc-motif-data',
@@ -45,63 +49,75 @@ const MOTIFS = {
     // Made up on purpose: 123-45-6789 is not a valid SSN, 555-01xx numbers are reserved for fiction, example.com for examples.
     ...[['Name', 'Emily Johnson'], ['SSN', '123-45-6789'], ['Address', '1200 Oak St, Austin, TX'], ['Phone', '+1 (212) 555-0142'], ['Email', 'emily.j@example.com']]
       .map(([label, value], i) => h('div', 'sc-doc-row', h('span', 'sc-doc-label', label), setVars(h('span', 'sc-pii', value), { i })))),
+  // Vetrosoft: a small business website puts itself together in a browser window, then the price lands on it.
+  site: () => h('div', 'sc-motif sc-motif-site',
+    h('div', 'sc-browser',
+      h('div', 'sc-browser-bar', h('i'), h('i'), h('i'), h('span', 'sc-url', 'yourbusiness.com')),
+      h('div', 'sc-site',
+        setVars(h('div', 'sc-site-nav sc-build', h('b', null, 'Bakery'), h('i'), h('i'), h('i')), { i: 0 }),
+        setVars(h('div', 'sc-site-hero sc-build', 'Fresh bread, baked every morning'), { i: 1 }),
+        setVars(h('div', 'sc-site-btn sc-build', 'Order online'), { i: 2 }),
+        setVars(h('div', 'sc-site-tiles sc-build', h('i'), h('i'), h('i')), { i: 3 }))),
+    h('span', 'sc-price', 'From €29/mo')),
 };
 
 export function mountAds(slot, ads) {
-  const slides = [], segs = [];
-  const stage = h('div', 'showcase-stage');
-  const progress = h('div', 'showcase-progress'); // logo tabs, half-page unit
-  const timer = h('div', 'showcase-timer', h('i')); // plain timer line, anchor bar
-  let index = 0;
+  const track = h('div', 'showcase-track');
+  const timer = h('div', 'showcase-timer', h('i'));
 
-  const show = i => {
-    index = i;
-    slides.forEach((s, j) => { s.classList.toggle('is-active', j === i); s.inert = j !== i; });
-    segs.forEach((s, j) => {
-      s.classList.remove('is-active');
-      s.classList.toggle('is-done', j < i);
-      s.setAttribute('aria-current', String(j === i));
-    });
-    timer.classList.remove('is-running');
-    void timer.offsetWidth; // restart the timing animations even when the same ad is picked again
-    segs[i].classList.add('is-active');
-    timer.classList.add('is-running');
-  };
-
-  ads.forEach((ad, i) => {
+  for (const ad of ads) {
     const motif = MOTIFS[ad.motif]();
-    motif.setAttribute('aria-hidden', 'true');
+    const art = h('span', 'sc-art', motif);
+    art.setAttribute('aria-hidden', 'true');
     const arrow = h('span', 'sc-arrow', '→');
     arrow.setAttribute('aria-hidden', 'true');
     const logo = Object.assign(document.createElement('img'), { src: ad.logo, alt: '', width: 40, height: 40, className: 'sc-logo' });
-    const slide = setVars(h('a', 'sc-slide',
-      motif,
+    const card = setVars(h('a', 'sc-slide',
+      art,
       h('span', 'sc-brand', logo, h('span', 'sc-name', ad.title)),
       h('span', 'sc-headline', ad.headline),
-      h('span', 'sc-line', ad.line),
       h('span', 'sc-cta', h('span', 'sc-cta-text', ad.cta), arrow)), ad.theme, 'sc-');
     // A new tab, so following an ad never throws away what someone was doing on this page.
-    Object.assign(slide, { href: ad.url, target: '_blank', rel: 'noopener' });
-    slides.push(slide);
-    stage.append(slide);
-
-    // A tab per product with its logo and name, so all three stay visible while one plays.
-    const tabLogo = Object.assign(document.createElement('img'), { src: ad.logo, alt: '', width: 28, height: 28 });
-    const seg = h('button', 'showcase-seg', tabLogo, h('span', 'showcase-seg-name', ad.title), h('i'));
-    seg.type = 'button';
-    seg.setAttribute('aria-label', `Show ${ad.title}, ${i + 1} of ${ads.length}`);
-    seg.addEventListener('click', () => show(i));
-    segs.push(seg);
-    progress.append(seg);
-  });
+    Object.assign(card, { href: ad.url, target: '_blank', rel: 'noopener' });
+    track.append(card);
+  }
 
   const close = h('button', 'showcase-close', '×');
   close.type = 'button';
   close.setAttribute('aria-label', 'Close');
-  const unit = setVars(h('div', 'showcase', close, stage, progress, timer), { 'sc-interval': `${INTERVAL}ms` });
+  const unit = setVars(h('div', 'showcase', close, h('div', 'showcase-stage', track), timer),
+    { 'sc-interval': `${INTERVAL}ms`, 'sc-rows': Math.min(ads.length, RAIL_CARDS) });
 
-  unit.addEventListener('animationend', e => { if (e.animationName === 'sc-progress') show((index + 1) % slides.length); });
-  // Pause while someone points at or tabs into the ad, and while the tab is hidden.
+  // The first cards in the track are the ones showing (three in the rail, one in the bar): they play their scene and
+  // can be tabbed to. The rest wait out of view. The timer only runs when there is something to rotate in.
+  const settle = () => {
+    const showing = RAIL.matches ? RAIL_CARDS : 1;
+    [...track.children].forEach((card, i) => {
+      card.classList.toggle('is-active', i < showing);
+      card.inert = i >= showing;
+    });
+    timer.classList.remove('is-running');
+    if (ads.length <= showing) return;
+    void timer.offsetWidth; // restart the timer animation
+    timer.classList.add('is-running');
+  };
+  // The top card goes to the back of the queue. In the bar the next ad fades in; in the rail the stack first slides up
+  // by one card, with the next card already playing its scene as it comes into view.
+  const finish = () => {
+    track.classList.remove('is-sliding');
+    track.append(track.firstElementChild);
+    settle();
+  };
+  const advance = () => {
+    if (!RAIL.matches || REDUCE.matches) return finish();
+    track.children[RAIL_CARDS].classList.add('is-active');
+    track.classList.add('is-sliding');
+  };
+  track.addEventListener('transitionend', e => { if (e.target === track && track.classList.contains('is-sliding')) finish(); });
+  unit.addEventListener('animationend', e => { if (e.animationName === 'sc-progress') advance(); });
+  RAIL.addEventListener('change', () => { track.classList.remove('is-sliding'); settle(); });
+
+  // Pause while someone points at or tabs into the ads, and while the tab is hidden.
   const pause = on => unit.classList.toggle('is-paused', on);
   unit.addEventListener('pointerenter', () => pause(true));
   unit.addEventListener('pointerleave', () => pause(unit.contains(document.activeElement)));
@@ -115,5 +131,5 @@ export function mountAds(slot, ads) {
 
   slot.replaceChildren(unit);
   document.body.classList.add('has-showcase-bar');
-  show(0);
+  settle();
 }

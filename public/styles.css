@@ -635,6 +635,11 @@ td .rate { margin-right: .375rem; }
 
 /* ---------- footer ---------- */
 .foot { display: grid; gap: var(--s2); margin-top: var(--s8); padding-block: var(--s6) var(--s10); font-size: var(--fs-14); color: var(--text-2); border-top: 1px solid var(--border); }
+a.vcf-home { justify-self: start; display: inline-flex; align-items: center; gap: .65rem; min-height: 44px; margin-bottom: var(--s2); padding: .3rem 1.1rem .3rem .35rem; border: 1px solid var(--border); border-radius: 999px; color: var(--text); font-size: 1rem; font-weight: 650; text-decoration: none; transition: border-color .2s ease-out, background-color .2s ease-out; }
+a.vcf-home:hover { color: var(--text); border-color: #ff4fa3; background: color-mix(in srgb, #ff4fa3 8%, transparent); }
+.vcf-home svg { flex: none; width: 1.9rem; height: 1.9rem; transition: transform .3s cubic-bezier(.3, 1.5, .5, 1); }
+.vcf-home:hover svg, .vcf-home:focus-visible svg { transform: rotate(-8deg) scale(1.1); }
+.vcf-home b { font-weight: 800; }
 .net { display: inline-flex; align-items: center; gap: var(--s2); font-weight: 600; color: var(--text); }
 .net-dot { width: .5rem; height: .5rem; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 3px var(--accent-soft); }
 .net.is-offline .net-dot { background: var(--warn-ink); box-shadow: 0 0 0 3px var(--warn-bg); }

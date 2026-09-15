@@ -1,7 +1,7 @@
 // Offline support: precache every app file, then serve network first with the cache as fallback.
 // Bump CACHE when this list changes. test/static.test.mjs checks the list matches public/.
 // The meeting time pages are not precached: each one is cached when it is opened online.
-const CACHE = 'overlap-v8';
+const CACHE = 'overlap-v9';
 const FILES = [
   "./",
   "styles.css",
@@ -27,6 +27,7 @@ const FILES = [
   "makers/censory.svg",
   "makers/penholder.svg",
   "makers/scrapeland.svg",
+  "makers/vetrosoft.svg",
   "js/cities.js"
 ];
 

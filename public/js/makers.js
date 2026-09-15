@@ -1,12 +1,11 @@
-// Our other apps, shown by showcase.js as a rotating ad. Plain links, no tracking beyond the utm_source in the URL.
+// Our other apps, shown by showcase.js. Plain links, no tracking beyond the utm_source in the URL.
 // Logos are served from this site (img-src 'self'). A JS module because the CSP blocks fetching JSON,
 // and named makers.js, not ads.js: ad blockers block files called ads.js, which would break the page's import.
-// theme keys become --ad-<key> custom properties on each ad; copy comes from each product's own site.
+// theme keys become --sc-<key> custom properties on each card; copy comes from each product's own site.
 export default [
   {
     title: 'scrape.land',
     headline: 'The web, turned into data.',
-    line: 'Send any URL, get the exact fields you need as clean structured data. Start free with 1,000 requests.',
     cta: 'Start free',
     url: 'https://scrape.land/?utm_source=overlap',
     logo: 'makers/scrapeland.svg',
@@ -16,7 +15,6 @@ export default [
   {
     title: 'Penholder',
     headline: 'Everything is a priority. Put them in order.',
-    line: 'Anyone can add, one person holds the pen. Five dollars a month per team.',
     cta: 'Try Penholder',
     url: 'https://penholder.app/?utm_source=overlap',
     logo: 'makers/penholder.svg',
@@ -26,11 +24,19 @@ export default [
   {
     title: 'Censory',
     headline: 'Redact personal data from PDFs and scans.',
-    line: 'Finds names, ID numbers, faces and signatures, then deletes them from the file itself. You approve every redaction.',
     cta: 'Try Censory',
     url: 'https://censory.app/?utm_source=overlap',
     logo: 'makers/censory.svg',
     motif: 'redact',
     theme: { bg: '#111a26', fg: '#f4efe3', muted: '#c0c7d2', accent: '#c9a24a', 'accent-2': '#e3c37a', 'cta-bg': '#c9a24a', 'cta-ink': '#111a26', panel: '#f4efe3' },
+  },
+  {
+    title: 'Vetrosoft',
+    headline: 'The website your business is missing.',
+    cta: 'Get a website',
+    url: 'https://vetrosoft.com/?utm_source=overlap',
+    logo: 'makers/vetrosoft.svg',
+    motif: 'site',
+    theme: { bg: 'linear-gradient(160deg, #1c1917, #0c0a09 60%)', fg: '#faf6f1', muted: '#d6cfc4', accent: '#2b8cff', 'accent-2': '#63f0ff', 'cta-bg': 'linear-gradient(135deg, #63f0ff, #2b8cff 50%, #7d6cff)', 'cta-ink': '#0c0a09', panel: 'linear-gradient(160deg, #1f3b5c, #2a2350)' },
   },
 ];

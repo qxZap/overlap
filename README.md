@@ -64,9 +64,9 @@ Tests cover the US and EU daylight saving mismatch (New York and London in March
 
 The script keeps name, ASCII name, country code, region and time zone, sorts by population and warns about (and drops) any time zone that Node's `Intl` does not accept. Country names come from `Intl.DisplayNames` at runtime. `tools/data/` is gitignored.
 
-City data is JS rather than JSON, and the house ads (scrape.land, Penholder, Censory) live in `public/js/makers.js` with logos in `public/makers/`, instead of `ads.json`, because the CSP sets `connect-src 'none'`, which blocks `fetch` and JSON module imports alike. (Nothing is named `ads`: ad blockers block such files, and a blocked import would break the page.) The city file is loaded with a dynamic `import()` the first time someone types in or taps the search box, never on page load.
+City data is JS rather than JSON, and the house ads (scrape.land, Penholder, Censory, Vetrosoft) live in `public/js/makers.js` with logos in `public/makers/`, instead of `ads.json`, because the CSP sets `connect-src 'none'`, which blocks `fetch` and JSON module imports alike. (Nothing is named `ads`: ad blockers block such files, and a blocked import would break the page.) The city file is loaded with a dynamic `import()` the first time someone types in or taps the search box, never on page load.
 
-The ads render through `public/js/showcase.js` and `public/showcase.css`: a dismissible bar fixed to the bottom of screens narrower than 75rem, and a rotating half page unit in a sticky right column from 75rem. Plain links, no tracking, every animation is CSS and stops under reduced motion.
+The ads render through `public/js/showcase.js` and `public/showcase.css`: on screens narrower than 75rem a dismissible bar fixed to the bottom shows one ad at a time; from 75rem up to three cards stack in a sticky right column, which slides up one card at a time when there are more ads. Plain links, no tracking, every animation is CSS. Under reduced motion the ads still take turns, without movement.
 
 The Open Graph image `public/og.png` is rendered from `tools/og.html`:
 

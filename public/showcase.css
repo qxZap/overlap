@@ -1,6 +1,7 @@
-/* Rotating ad unit, built by js/showcase.js into the page's .showcase-slot element.
-   Small screens: an anchor bar fixed to the bottom edge, with a close button.
-   Wide screens (75rem and up): a half-page unit, sticky in the page's right rail.
+/* Ads for our own apps, built by js/showcase.js into the page's .showcase-slot element.
+   Small screens: one ad at a time in a bar fixed to the bottom edge, with a close button and a thin timer line.
+   Wide screens (75rem and up): up to three cards stacked in the page's right rail. With more ads than that the stack
+   slides up one card each interval, so it always shows three however many there are.
    Each ad paints itself from its brand theme (--sc-* set from makers.js), so it reads the same on any page theme. */
 
 .showcase {
@@ -13,7 +14,6 @@
 .showcase.is-dismissed { display: none; }
 @media (max-width: 74.99rem) {
   body.has-showcase-bar { padding-bottom: calc(6.5rem + env(safe-area-inset-bottom)); }
-  .showcase .sc-motif { display: none; } /* beats the later .sc-motif-data/.sc-motif-redact display rules */
 }
 
 .showcase-close {
@@ -25,15 +25,15 @@
 }
 .showcase-close::before { content: ""; position: absolute; inset: -.4rem; } /* 44px touch target around the 30px button */
 .showcase-close:hover { background: #eef1f6; }
-.showcase-close:focus-visible, .showcase-seg:focus-visible { outline: 3px solid #4d90fe; outline-offset: 2px; }
+.showcase-close:focus-visible { outline: 3px solid #4d90fe; outline-offset: 2px; }
 
 .showcase-stage {
-  display: grid;
   overflow: hidden;
   border-radius: 16px;
   box-shadow: 0 12px 32px rgba(10, 14, 24, .3), 0 2px 8px rgba(10, 14, 24, .2);
   isolation: isolate;
 }
+.showcase-track { display: grid; }
 .sc-slide {
   grid-area: 1 / 1;
   display: grid;
@@ -57,9 +57,9 @@
   transition: opacity .42s cubic-bezier(.2, .8, .2, 1), transform .42s cubic-bezier(.2, .8, .2, 1);
 }
 .sc-slide:focus-visible { outline: 3px solid var(--sc-accent); outline-offset: -3px; }
-.sc-motif, .sc-name, .sc-line { display: none; }
-.sc-brand { grid-area: brand; display: flex; align-items: center; gap: .6rem; }
-.sc-logo { display: block; width: 2.5rem; height: 2.5rem; border-radius: 10px; }
+.sc-art, .sc-name { display: none; }
+.sc-brand { grid-area: brand; display: flex; align-items: center; gap: .6rem; min-width: 0; }
+.sc-logo { display: block; flex: none; width: 2.5rem; height: 2.5rem; border-radius: 10px; }
 .sc-headline {
   grid-area: head;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
@@ -79,55 +79,59 @@
   .sc-cta-text { display: none; }
 }
 
-/* Timing. The anchor bar shows a thin timer line with no controls: tap targets on top of the ad link would overlap it.
-   The half-page unit shows a clickable segment per ad. Whichever is visible fills over the interval, then the next ad shows
-   (display: none elements run no animation, so only the visible one fires animationend). */
-.showcase-progress { display: none; }
+/* Timing. The timer line's animation is the clock: when it ends, showcase.js brings in the next ad, so pausing the
+   animation (pointer or focus inside, tab hidden) pauses the rotation. In the rail the line is invisible but still runs. */
 .showcase-timer { position: absolute; z-index: 1; left: 1rem; right: 1rem; bottom: .4rem; height: 3px; overflow: hidden; border-radius: 2px; background: rgba(255, 255, 255, .3); pointer-events: none; }
-.showcase-timer i, .showcase-seg i { position: absolute; inset: 0; border-radius: inherit; background: rgba(255, 255, 255, .92); transform: scaleX(0); transform-origin: left; }
-.showcase-timer.is-running i, .showcase-seg.is-active i { animation: sc-progress var(--sc-interval, 7s) linear forwards; }
-.showcase.is-paused :is(.showcase-timer.is-running, .showcase-seg.is-active) i,
-.showcase.is-hidden-tab :is(.showcase-timer.is-running, .showcase-seg.is-active) i { animation-play-state: paused; }
-/* Logo tabs under the half-page unit: all three products stay visible, and the active tab carries the timer bar. */
-.showcase-seg {
-  position: relative; flex: 1; display: grid; justify-items: center; align-content: start; gap: .3rem;
-  min-width: 0; min-height: 3.75rem; padding: .5rem .25rem .8rem; cursor: pointer;
-  font-family: inherit; font-size: .75rem; font-weight: 650; line-height: 1.2; color: inherit;
-  background: none; border: 1px solid transparent; border-radius: 10px; opacity: .7;
-  transition: opacity .2s ease-out, background-color .2s ease-out, border-color .2s ease-out;
-}
-.showcase-seg:hover { opacity: 1; }
-.showcase-seg.is-active { opacity: 1; background: color-mix(in srgb, currentColor 6%, transparent); border-color: color-mix(in srgb, currentColor 16%, transparent); }
-.showcase-seg img { display: block; width: 1.75rem; height: 1.75rem; border-radius: 7px; }
-.showcase-seg-name { max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-.showcase-seg i { inset: auto .6rem .35rem; height: 3px; background: currentColor; opacity: .75; }
+.showcase-timer:not(.is-running) { visibility: hidden; }
+.showcase-timer i { position: absolute; inset: 0; border-radius: inherit; background: rgba(255, 255, 255, .92); transform: scaleX(0); transform-origin: left; }
+.showcase-timer.is-running i { animation: sc-progress var(--sc-interval, 6s) linear forwards; }
+.showcase.is-paused .showcase-timer i, .showcase.is-hidden-tab .showcase-timer i { animation-play-state: paused; }
 @keyframes sc-progress { to { transform: scaleX(1); } }
 
 @media (min-width: 75rem) {
   .showcase-slot { position: sticky; top: 1.5rem; align-self: start; }
-  .showcase { position: relative; inset: auto; max-width: none; margin: 0; }
+  .showcase {
+    --sc-gap: .75rem;
+    /* three cards fit in the window's height, within limits */
+    --sc-card: clamp(11rem, calc((100dvh - 5rem - 2 * var(--sc-gap)) / 3), 14.5rem);
+    position: relative; inset: auto; max-width: none; margin: 0;
+  }
   .showcase.is-dismissed { display: block; }
   .showcase-close { display: none; }
-  .sc-slide {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "motif" "brand" "head" "line" "cta";
-    align-items: start;
-    align-content: start;
-    gap: .8rem;
-    padding: 1.1rem;
+  .showcase-timer { visibility: hidden; }
+  /* The window onto the stack, exactly --sc-rows cards tall. Its padding is as wide as the gap, so card shadows
+     are not cut off and the next card waits just below the edge. */
+  .showcase-stage {
+    box-sizing: content-box;
+    height: calc(var(--sc-rows) * var(--sc-card) + (var(--sc-rows) - 1) * var(--sc-gap));
+    margin: calc(-1 * var(--sc-gap));
+    padding: var(--sc-gap);
+    border-radius: 0;
+    box-shadow: none;
   }
-  .sc-motif { display: block; grid-area: motif; }
-  .sc-name { display: inline; font-size: .9375rem; font-weight: 700; }
-  .sc-logo { width: 2rem; height: 2rem; border-radius: 8px; }
-  .sc-headline { display: block; font-size: 1.375rem; line-height: 1.2; letter-spacing: -.01em; text-wrap: balance; }
-  .sc-line { display: block; grid-area: line; font-size: .875rem; line-height: 1.5; color: var(--sc-muted); }
-  .sc-cta { justify-self: stretch; min-height: 2.75rem; margin-top: .2rem; font-size: .9375rem; }
-  .showcase-progress { display: flex; gap: .3rem; margin-top: .75rem; }
-  .showcase-timer { display: none; }
+  .showcase-track { grid-auto-rows: var(--sc-card); gap: var(--sc-gap); }
+  .showcase-track.is-sliding { transform: translateY(calc(-1 * (var(--sc-card) + var(--sc-gap)))); transition: transform .8s cubic-bezier(.65, 0, .35, 1); }
+  .sc-slide {
+    grid-area: auto;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    grid-template-areas: "art art" "brand cta" "head head";
+    gap: .5rem;
+    padding: .65rem .65rem .8rem;
+    border-radius: 14px;
+    box-shadow: 0 6px 16px rgba(10, 14, 24, .2), 0 1px 3px rgba(10, 14, 24, .16);
+    opacity: 1; visibility: visible; transform: none; transition: none;
+  }
+  .sc-art { display: block; grid-area: art; align-self: stretch; position: relative; overflow: hidden; border-radius: 10px; }
+  .sc-brand { gap: .45rem; }
+  .sc-name { display: block; overflow: hidden; font-size: .875rem; font-weight: 700; white-space: nowrap; text-overflow: ellipsis; }
+  .sc-logo { width: 1.5rem; height: 1.5rem; border-radius: 6px; }
+  .sc-headline { font-size: .9375rem; line-height: 1.25; }
+  .sc-cta { min-height: 1.9rem; padding: .3rem .7rem; font-size: .75rem; }
 }
 
-/* Motifs, only shown in the half-page unit */
-.sc-motif { position: relative; height: 10.5rem; overflow: hidden; border-radius: 12px; background: var(--sc-panel); }
+/* Scenes, only shown in the rail. Each is drawn at a comfortable size, then scaled down to fill the card's art box. */
+.sc-motif { position: absolute; top: 0; left: 0; width: calc(100% / .7); height: calc(100% / .7); overflow: hidden; background: var(--sc-panel); transform: scale(.7); transform-origin: 0 0; }
 
 .sc-motif-data { display: grid; align-content: center; gap: .7rem; padding: 0 1.1rem; font: 500 .8125rem/1 "JetBrains Mono", ui-monospace, Consolas, monospace; }
 .sc-row { display: flex; align-items: center; gap: .6rem; }
@@ -137,7 +141,7 @@
 @keyframes sc-fill { to { transform: scaleX(var(--w)); opacity: 1; } }
 .sc-beam { position: absolute; left: 0; right: 0; top: -3rem; height: 3rem; background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--sc-accent) 30%, transparent), transparent); }
 .sc-slide.is-active .sc-beam { animation: sc-beam 1.4s ease-in-out .15s 2; }
-@keyframes sc-beam { to { transform: translateY(13.5rem); } }
+@keyframes sc-beam { to { transform: translateY(16rem); } }
 
 /* Penholder: a phone showing the team's list in Penholder's own colours. The phone runs past the bottom of the panel.
    Slots come from showcase.js (--y start, --dy move): the pen holder drags the last card above the line, the rest shift down. */
@@ -167,11 +171,11 @@
 @keyframes sc-finger { 0% { opacity: 0; transform: scale(.6); } 15%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; transform: scale(1.25); } }
 
 /* Censory: a document with made-up personal data. A gold box marks each value as found, then a bar blacks it out. */
-.sc-motif-redact { display: grid; align-content: center; gap: .3rem; padding: 0 .9rem; font-size: .6875rem; line-height: 1.5; color: #1f2430; }
-.sc-doc-title { display: flex; justify-content: space-between; margin-bottom: .15rem; padding-bottom: .3rem; border-bottom: 1px solid #d8cfbb; font-size: .625rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #111a26; }
+.sc-motif-redact { display: grid; align-content: start; gap: .3rem; padding: .9rem .9rem 0; font-size: .75rem; line-height: 1.5; color: #1f2430; }
+.sc-doc-title { display: flex; justify-content: space-between; margin-bottom: .15rem; padding-bottom: .3rem; border-bottom: 1px solid #d8cfbb; font-size: .6875rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: #111a26; }
 .sc-doc-title span { font-weight: 600; letter-spacing: 0; text-transform: none; color: #6b6457; }
 .sc-doc-row { display: flex; gap: .5rem; white-space: nowrap; }
-.sc-doc-label { flex: 0 0 3.1rem; color: #6b6457; }
+.sc-doc-label { flex: 0 0 3.4rem; color: #6b6457; }
 .sc-pii { position: relative; font-weight: 600; }
 .sc-pii::before, .sc-pii::after { content: ""; position: absolute; inset: -.08rem -.2rem; border-radius: 3px; }
 .sc-pii::before { background: rgba(201, 162, 74, .18); box-shadow: 0 0 0 1.5px #c9a24a; opacity: 0; }
@@ -181,12 +185,34 @@
 @keyframes sc-detect { 35% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes sc-close { to { transform: scaleX(1); } }
 
+/* Vetrosoft: a small business site builds itself piece by piece in a browser window, then the price tag lands.
+   The window runs past the bottom of the panel, like the phone. */
+.sc-motif-site { display: grid; align-content: start; padding: 1rem 1.1rem 0; }
+.sc-browser { overflow: hidden; border-radius: .7rem .7rem 0 0; background: #faf6f1; color: #1c1917; box-shadow: 0 12px 28px rgba(0, 0, 0, .4); }
+.sc-browser-bar { display: flex; align-items: center; gap: .3rem; height: 1.6rem; padding: 0 .6rem; background: #ece4d8; }
+.sc-browser-bar i { width: .5rem; height: .5rem; border-radius: 50%; background: #cfc4b4; }
+.sc-url { flex: 1; margin-left: .4rem; padding: .15rem .6rem; border-radius: 999px; background: #fff; color: #57534e; font-size: .6875rem; line-height: 1.2; }
+.sc-site { display: grid; gap: .6rem; padding: .7rem .9rem 2rem; }
+.sc-site-nav { display: flex; align-items: center; gap: .5rem; font-size: .8125rem; }
+.sc-site-nav b { margin-right: auto; font-weight: 800; }
+.sc-site-nav i { width: 1.6rem; height: .3rem; border-radius: 2px; background: #d6cdbf; }
+.sc-site-hero { max-width: 13rem; font-size: 1.3rem; font-weight: 800; line-height: 1.1; letter-spacing: -.02em; }
+.sc-site-btn { justify-self: start; padding: .35rem .8rem; border-radius: 999px; background: linear-gradient(135deg, #63f0ff, #2b8cff 50%, #7d6cff); color: #0c0a09; font-size: .75rem; font-weight: 800; }
+.sc-site-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: .45rem; }
+.sc-site-tiles i { height: 2.6rem; border-radius: .45rem; background: linear-gradient(135deg, #eadfce, #d5c4ab); }
+.sc-price { position: absolute; right: 1.1rem; bottom: 1rem; padding: .4rem .8rem; border-radius: 999px; background: #0c0a09; color: #faf6f1; font-size: 1.05rem; font-weight: 800; white-space: nowrap; box-shadow: 0 0 0 2px #2b8cff, 0 8px 20px rgba(0, 0, 0, .45); transform: rotate(-4deg); }
+.sc-slide.is-active .sc-build { animation: sc-build .5s cubic-bezier(.2, .8, .2, 1) calc(.4s + var(--i) * .32s) both; }
+.sc-slide.is-active .sc-price { animation: sc-tag .55s cubic-bezier(.3, 1.4, .5, 1) 1.9s both; }
+@keyframes sc-build { from { opacity: 0; transform: translateY(.6rem); } }
+@keyframes sc-tag { from { opacity: 0; transform: rotate(-4deg) scale(.4); } }
+
 @media (prefers-reduced-motion: reduce) {
-  /* No autoplay and no scenes: the progress never runs, so the ad only changes when a segment is clicked. */
-  .sc-slide, .sc-slide.is-active, .sc-arrow { transition: none; }
-  .showcase *, .showcase *::before, .showcase *::after { animation: none !important; }
-  .showcase-seg.is-active i { transform: scaleX(1); }
-  .showcase-timer { display: none; }
+  /* No sliding and no scenes: the ads still take turns, but each change is instant. */
+  .sc-slide, .sc-slide.is-active, .sc-arrow, .showcase-track.is-sliding { transition: none; }
+  .showcase *:not(.showcase-timer i), .showcase *::before, .showcase *::after { animation: none !important; }
+  .showcase-timer { visibility: hidden; }
+  /* Pages that shorten every animation under reduced motion must not shorten the clock as well. */
+  .showcase-timer.is-running i { animation-duration: var(--sc-interval, 6s) !important; }
   .sc-val { transform: scaleX(var(--w)); opacity: 1; }
   .sc-card { transform: translateY(var(--dy)); }
   .sc-card.is-rising { color: #3730a3; background: #eef0ff; border-color: #4f46e5; }
