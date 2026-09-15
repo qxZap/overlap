@@ -1,10 +1,12 @@
-// Offline support: precache every static file, then serve network first with the cache as fallback.
+// Offline support: precache every app file, then serve network first with the cache as fallback.
 // Bump CACHE when this list changes. test/static.test.mjs checks the list matches public/.
-const CACHE = 'overlap-v7';
+// The meeting time pages are not precached: each one is cached when it is opened online.
+const CACHE = 'overlap-v8';
 const FILES = [
   "./",
   "styles.css",
   "showcase.css",
+  "pages.css",
   "favicon.svg",
   "favicon.ico",
   "favicon-96.png",
@@ -57,6 +59,9 @@ self.addEventListener('fetch', event => {
         return res;
       })
       .catch(() => caches.match(req, { ignoreSearch: true })
-        .then(hit => hit || (req.mode === 'navigate' ? caches.match('./') : Response.error()))),
+        .then(hit => hit || (req.mode !== 'navigate' ? Response.error()
+          // A page never opened online, such as /meeting-time/tokyo-berlin/, redirects to the cached app.
+          // Serving the app's HTML at that address instead would break its relative asset paths.
+          : caches.match('./').then(app => (app ? Response.redirect('./') : Response.error()))))),
   );
 });

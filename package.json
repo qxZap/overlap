@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node serve.mjs",
+    "pages": "node tools/build-pages.mjs",
     "test": "node --test"
   }
 }

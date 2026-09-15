@@ -12,5 +12,6 @@ It searches about 34,000 cities or any IANA time zone, runs all time zone math i
 
 - [Overlap](https://overlap.vibe-coding.fans/): the live app
 - [FAQ](https://overlap.vibe-coding.fans/#faq): questions about planning meetings across time zones
+- [Meeting times for city pairs](https://overlap.vibe-coding.fans/meeting-time/): the time difference, clock change dates and best meeting time for pairs of business cities, such as [London and New York](https://overlap.vibe-coding.fans/meeting-time/london-new-york/)
 - [Source code](https://github.com/qxZap/overlap): GitHub repository, MIT License
 - [vibe-coding.fans](https://vibe-coding.fans/): more free tools from the same makers

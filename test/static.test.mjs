@@ -9,11 +9,13 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const pub = join(root, 'public');
 const walk = dir => readdirSync(dir, { withFileTypes: true }).flatMap(e => (e.isDirectory() ? walk(join(dir, e.name)) : [join(dir, e.name)]));
 const files = walk(pub).map(f => relative(pub, f).replaceAll('\\', '/'));
+// The generated meeting time pages are cached when opened, not precached; test/pages.test.mjs covers them.
+const app = files.filter(f => !f.startsWith('meeting-time/'));
 
-test('service worker precaches exactly the files in public/', () => {
+test('service worker precaches exactly the app files in public/', () => {
   const sw = readFileSync(join(pub, 'sw.js'), 'utf8');
   const list = JSON.parse(/const FILES = (\[[\s\S]*?\]);/.exec(sw)[1]);
-  assert.deepEqual(list.map(f => (f === './' ? 'index.html' : f)).sort(), files.filter(f => f !== '_headers' && f !== 'sw.js').sort());
+  assert.deepEqual(list.map(f => (f === './' ? 'index.html' : f)).sort(), app.filter(f => f !== '_headers' && f !== 'sw.js').sort());
 });
 
 test('no en or em dashes in public/, README or notices', () => {
@@ -51,7 +53,7 @@ test('structured data parses and the FAQPage matches the visible FAQ word for wo
 });
 
 test('page weight under 300 KB gzipped, excluding city data', () => {
-  const page = files.filter(f => !['js/cities.js', 'og.png', '_headers', 'robots.txt'].includes(f));
+  const page = app.filter(f => !['js/cities.js', 'og.png', '_headers', 'robots.txt'].includes(f));
   const bytes = page.reduce((sum, f) => sum + gzipSync(readFileSync(join(pub, f))).length, 0);
   assert.ok(bytes < 300_000, `${bytes} bytes`);
 });

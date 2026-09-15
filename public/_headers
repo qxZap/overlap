@@ -6,6 +6,10 @@
 /js/*
   Content-Security-Policy: default-src 'self'; connect-src 'none'; img-src 'self' data: blob:; frame-ancestors 'none'; form-action 'none'; base-uri 'none'
 
+# The generated meeting time pages run no script at all. Their JSON-LD is a data block, which CSP never executes.
+/meeting-time/*
+  Content-Security-Policy: default-src 'self'; script-src 'none'; connect-src 'none'; img-src 'self' data:; frame-ancestors 'none'; form-action 'none'; base-uri 'none'
+
 # The service worker may only talk to this same origin, to cache the app for offline use.
 /sw.js
   Content-Security-Policy: default-src 'none'; connect-src 'self'

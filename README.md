@@ -52,7 +52,7 @@ npm test                     # node --test, no dependencies
 
 `serve.mjs` is a zero dependency static server that applies `public/_headers`, so the security headers can be checked locally.
 
-Tests cover the US and EU daylight saving mismatch (New York and London in March 2026), +05:30, +05:45 and +12:45 offsets, Lord Howe, 23 and 25 hour days, a team across the date line, the six city sample team on a normal date and on a mismatch date (checked against hand computed windows), URL round trip with awkward names, `.ics` structure and local time, the UI helpers (presets decode to valid zones, grouping by city, pointer position to a 15 minute window, keyboard steps, time typeahead, search highlighting), the service worker precache list, no en or em dashes, no inline scripts or styles, the FAQ structured data matching the visible FAQ, the page weight budget, and the response headers.
+Tests cover the US and EU daylight saving mismatch (New York and London in March 2026), +05:30, +05:45 and +12:45 offsets, Lord Howe, 23 and 25 hour days, a team across the date line, the six city sample team on a normal date and on a mismatch date (checked against hand computed windows), URL round trip with awkward names, `.ics` structure and local time, the UI helpers (presets decode to valid zones, grouping by city, pointer position to a 15 minute window, keyboard steps, time typeahead, search highlighting), the service worker precache list, no en or em dashes, no inline scripts or styles, the FAQ structured data matching the visible FAQ, the page weight budget, the response headers, and the meeting time pages (identical to a fresh build, title and description lengths, headings, FAQ structured data, no scripts, and the London and New York facts).
 
 ## City data
 
@@ -74,6 +74,25 @@ The Open Graph image `public/og.png` is rendered from `tools/og.html`:
 "C:/Program Files/Google/Chrome/Application/chrome.exe" --headless --hide-scrollbars --screenshot=<absolute path>/public/og.png --window-size=1200,630 file:///<absolute path>/tools/og.html
 ```
 
+## Meeting time pages
+
+`public/meeting-time/` holds one static page per city pair, such as `/meeting-time/london-new-york/`, and an index at `/meeting-time/` that lists every pair under both of its cities. The pages are generated and committed, and `public/sitemap.xml` is regenerated with them. To rebuild:
+
+```sh
+npm run pages                           # for today's date
+node tools/build-pages.mjs 2027-01-04   # for a given date
+```
+
+`tools/pages-lib.mjs` holds the city list (10 hubs paired with every city, 20 more cities paired with the hubs, leaving out pairs that share a clock all year), works out each page with `public/js/tz.js` and renders it. `tools/build-pages.mjs` replaces `public/meeting-time/` and writes the sitemap. Each page covers the year of the build date:
+
+- the time difference in every period between clock changes, and the date and time each city changes clocks
+- the shared hours when both cities work 09:00 to 17:00, for each time difference in the year, or the least painful 1 hour meeting when they do not overlap (picked by `analyze`, as in the app)
+- an hour by hour conversion table, marking who is working
+- a four question FAQ with matching FAQPage and BreadcrumbList JSON-LD
+- a link that opens the pair in the app, and links to related pairs
+
+The pages have no script; they load `styles.css` and `pages.css`. Rebuild at the start of each year, and after a Node update that changes time zone rules: `test/pages.test.mjs` regenerates every page in memory for the date in the sitemap and fails if a committed file differs.
+
 ## Security headers
 
 `public/_headers` sets the Content-Security-Policy. With `npm start` running:
@@ -83,7 +102,7 @@ curl -I http://localhost:8080/          # Content-Security-Policy: default-src '
 curl -I http://localhost:8080/sw.js     # Content-Security-Policy: default-src 'none'; connect-src 'self'
 ```
 
-The page rules match `/` and `/js/*` rather than `/*` on purpose: matching rules are joined, and `connect-src 'none'` stacked onto `/sw.js` would stop the service worker from caching the app for offline use.
+The page rules match `/`, `/js/*` and `/meeting-time/*` rather than `/*` on purpose: matching rules are joined, and `connect-src 'none'` stacked onto `/sw.js` would stop the service worker from caching the app for offline use. The meeting time pages also get `script-src 'none'`.
 
 Lighthouse's SEO check reports that it cannot download `robots.txt`. It fetches the file from inside the page, and the page's `connect-src 'none'` blocks that; search engines request `robots.txt` directly and are not affected. Adding `connect-src 'self'` to the page rules turns the check green, at the cost of a looser policy.
 
@@ -107,7 +126,11 @@ public/js/makers.js    house ad copy, logos in public/makers/
 public/js/cities.js    generated GeoNames data, loaded on demand
 public/llms.txt        plain text summary for AI assistants
 public/sw.js           offline cache
-tools/                 city generator, OG image source, font license
+public/meeting-time/   generated city pair pages
+public/pages.css       styles for the city pair pages
+tools/pages-lib.mjs    city pair page data and rendering (pure, tested)
+tools/build-pages.mjs  writes the city pair pages and the sitemap
+tools/                 also the city generator, OG image source, font license
 ```
 
 ## Credits
