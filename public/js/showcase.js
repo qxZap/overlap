@@ -1,7 +1,7 @@
 // Ads for our own apps (data in makers.js). showcase.css switches the layout:
 // wide screens stack up to three cards in the right rail and, when there are more ads than that, slide the stack up
 // one card at a time, so it always shows three however many there are; small screens show one ad at a time in a
-// dismissible bar fixed to the bottom. Plain links, no tracking, no network: logos are local files and every animation is CSS.
+// bar fixed to the bottom. Plain links, no tracking, no network: logos are local files and every animation is CSS.
 const INTERVAL = 6000; // ms between moves; the timer's CSS animation runs this long, then the next ad comes in
 const RAIL_CARDS = 3;
 const RAIL = matchMedia('(min-width: 75rem)');
@@ -82,10 +82,7 @@ export function mountAds(slot, ads) {
     track.append(card);
   }
 
-  const close = h('button', 'showcase-close', '×');
-  close.type = 'button';
-  close.setAttribute('aria-label', 'Close');
-  const unit = setVars(h('div', 'showcase', close, h('div', 'showcase-stage', track), timer),
+  const unit = setVars(h('div', 'showcase', h('div', 'showcase-stage', track), timer),
     { 'sc-interval': `${INTERVAL}ms`, 'sc-rows': Math.min(ads.length, RAIL_CARDS) });
 
   // The first cards in the track are the ones showing (three in the rail, one in the bar): they play their scene and
@@ -124,10 +121,6 @@ export function mountAds(slot, ads) {
   unit.addEventListener('focusin', () => pause(true));
   unit.addEventListener('focusout', e => pause(unit.contains(e.relatedTarget)));
   document.addEventListener('visibilitychange', () => unit.classList.toggle('is-hidden-tab', document.hidden));
-  close.addEventListener('click', () => {
-    unit.classList.add('is-dismissed');
-    document.body.classList.remove('has-showcase-bar');
-  });
 
   slot.replaceChildren(unit);
   document.body.classList.add('has-showcase-bar');

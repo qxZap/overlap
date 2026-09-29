@@ -1,5 +1,5 @@
 /* Ads for our own apps, built by js/showcase.js into the page's .showcase-slot element.
-   Small screens: one ad at a time in a bar fixed to the bottom edge, with a close button and a thin timer line.
+   Small screens: one ad at a time in a bar fixed to the bottom edge, with a thin timer line.
    Wide screens (75rem and up): up to three cards stacked in the page's right rail. With more ads than that the stack
    slides up one card each interval, so it always shows three however many there are.
    Each ad paints itself from its brand theme (--sc-* set from makers.js), so it reads the same on any page theme. */
@@ -11,21 +11,9 @@
   max-width: 34rem;
   margin-inline: auto;
 }
-.showcase.is-dismissed { display: none; }
 @media (max-width: 74.99rem) {
   body.has-showcase-bar { padding-bottom: calc(6.5rem + env(safe-area-inset-bottom)); }
 }
-
-.showcase-close {
-  position: absolute; z-index: 2; top: -.7rem; right: -.35rem;
-  display: grid; place-items: center; width: 1.9rem; height: 1.9rem; padding: 0;
-  border: 0; border-radius: 50%; cursor: pointer; touch-action: manipulation;
-  font: 700 1.15rem/1 system-ui, sans-serif; color: #1b2230; background: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
-}
-.showcase-close::before { content: ""; position: absolute; inset: -.4rem; } /* 44px touch target around the 30px button */
-.showcase-close:hover { background: #eef1f6; }
-.showcase-close:focus-visible { outline: 3px solid #4d90fe; outline-offset: 2px; }
 
 .showcase-stage {
   overflow: hidden;
@@ -96,8 +84,6 @@
     --sc-card: clamp(11rem, calc((100dvh - 5rem - 2 * var(--sc-gap)) / 3), 14.5rem);
     position: relative; inset: auto; max-width: none; margin: 0;
   }
-  .showcase.is-dismissed { display: block; }
-  .showcase-close { display: none; }
   .showcase-timer { visibility: hidden; }
   /* The window onto the stack, exactly --sc-rows cards tall. Its padding is as wide as the gap, so card shadows
      are not cut off and the next card waits just below the edge. */
@@ -207,12 +193,12 @@
 @keyframes sc-tag { from { opacity: 0; transform: rotate(-4deg) scale(.4); } }
 
 @media (prefers-reduced-motion: reduce) {
-  /* No sliding and no scenes: the ads still take turns, but each change is instant. */
+  /* No sliding, no scenes and no rotation. The timer line's animation is the clock,
+     so stopping it here is what stops the ads taking turns: the cards showing are the
+     ones that stay. */
   .sc-slide, .sc-slide.is-active, .sc-arrow, .showcase-track.is-sliding { transition: none; }
-  .showcase *:not(.showcase-timer i), .showcase *::before, .showcase *::after { animation: none !important; }
+  .showcase *, .showcase *::before, .showcase *::after { animation: none !important; }
   .showcase-timer { visibility: hidden; }
-  /* Pages that shorten every animation under reduced motion must not shorten the clock as well. */
-  .showcase-timer.is-running i { animation-duration: var(--sc-interval, 6s) !important; }
   .sc-val { transform: scaleX(var(--w)); opacity: 1; }
   .sc-card { transform: translateY(var(--dy)); }
   .sc-card.is-rising { color: #3730a3; background: #eef0ff; border-color: #4f46e5; }
